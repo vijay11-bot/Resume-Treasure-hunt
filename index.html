@@ -1,995 +1,1584 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Timberline Drop — Monster Truck Forest Run</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bark:#241a12;
-    --bark-2:#332415;
-    --amber:#f2c879;
-    --ember:#d9531e;
-    --moss:#3d5a3d;
-    --parchment:#f4ecd8;
-  }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#0d1410;font-family:'Kalam',cursive;
-    touch-action:none;overscroll-behavior:none;-webkit-user-select:none;user-select:none;}
-  #canvas-wrap{position:fixed;inset:0;touch-action:none;}
-  canvas{display:block;touch-action:none;}
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Timberline Drop — Monster Truck Forest Run</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Kalam:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bark: #241a12;
+        --bark-2: #332415;
+        --amber: #f2c879;
+        --ember: #d9531e;
+        --moss: #3d5a3d;
+        --parchment: #f4ecd8;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #0d1410;
+        font-family: "Kalam", cursive;
+        touch-action: none;
+        overscroll-behavior: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      #canvas-wrap {
+        position: fixed;
+        inset: 0;
+        touch-action: none;
+      }
+      canvas {
+        display: block;
+        touch-action: none;
+      }
 
-  #loading{
-    position:fixed;inset:0;background:radial-gradient(ellipse at 50% 30%, #2b3a26 0%, #101a12 75%);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;
-    transition:opacity .8s ease;
-  }
-  #loading h1{
-    font-family:'Anton',sans-serif;color:var(--amber);font-size:clamp(28px,6vw,52px);
-    letter-spacing:1px;margin:0 0 14px;text-shadow:0 4px 0 rgba(0,0,0,.4);
-  }
-  #loading .bar{width:240px;height:6px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden;}
-  #loading .bar > div{height:100%;width:0%;background:var(--ember);animation:load 1.1s ease forwards;}
-  @keyframes load{to{width:100%;}}
-  #loading p{color:#cfd8c8;font-size:14px;margin-top:10px;opacity:.8;}
-  #loading.hide{opacity:0;pointer-events:none;}
+      #loading {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at 50% 30%,
+          #2b3a26 0%,
+          #101a12 75%
+        );
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        transition: opacity 0.8s ease;
+      }
+      #loading h1 {
+        font-family: "Anton", sans-serif;
+        color: var(--amber);
+        font-size: clamp(28px, 6vw, 52px);
+        letter-spacing: 1px;
+        margin: 0 0 14px;
+        text-shadow: 0 4px 0 rgba(0, 0, 0, 0.4);
+      }
+      #loading .bar {
+        width: 240px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      #loading .bar > div {
+        height: 100%;
+        width: 0%;
+        background: var(--ember);
+        animation: load 1.1s ease forwards;
+      }
+      @keyframes load {
+        to {
+          width: 100%;
+        }
+      }
+      #loading p {
+        color: #cfd8c8;
+        font-size: 14px;
+        margin-top: 10px;
+        opacity: 0.8;
+      }
+      #loading.hide {
+        opacity: 0;
+        pointer-events: none;
+      }
 
-  #hud{
-    position:fixed;top:16px;left:16px;z-index:20;color:var(--amber);
-    background:rgba(36,26,18,.55);border:1px solid rgba(242,200,121,.25);
-    border-radius:10px;padding:10px 14px;backdrop-filter:blur(3px);
-    max-width:240px;
-  }
-  #hud .title{font-family:'Anton',sans-serif;font-size:15px;letter-spacing:.5px;margin-bottom:4px;color:var(--parchment);}
-  #hud .hint{font-size:13px;line-height:1.4;color:#d8caa8;opacity:.85;}
+      #hud {
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        z-index: 20;
+        color: var(--amber);
+        background: rgba(36, 26, 18, 0.55);
+        border: 1px solid rgba(242, 200, 121, 0.25);
+        border-radius: 10px;
+        padding: 10px 14px;
+        backdrop-filter: blur(3px);
+        max-width: 240px;
+      }
+      #hud .title {
+        font-family: "Anton", sans-serif;
+        font-size: 15px;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+        color: var(--parchment);
+      }
+      #hud .hint {
+        font-size: 13px;
+        line-height: 1.4;
+        color: #d8caa8;
+        opacity: 0.85;
+      }
 
-  #speedo{
-    position:fixed;bottom:22px;right:22px;z-index:20;
-    width:118px;height:118px;border-radius:50%;
-    background:radial-gradient(circle at 40% 35%, var(--bark-2), var(--bark) 70%);
-    border:3px solid rgba(242,200,121,.4);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    box-shadow:0 8px 22px rgba(0,0,0,.45);
-  }
-  #speedo .num{font-family:'Anton',sans-serif;font-size:34px;color:var(--amber);line-height:1;}
-  #speedo .unit{font-size:11px;color:#c8b98d;margin-top:2px;letter-spacing:.5px;}
+      #speedo {
+        position: fixed;
+        bottom: 22px;
+        right: 22px;
+        z-index: 20;
+        width: 118px;
+        height: 118px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle at 40% 35%,
+          var(--bark-2),
+          var(--bark) 70%
+        );
+        border: 3px solid rgba(242, 200, 121, 0.4);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+      }
+      #speedo .num {
+        font-family: "Anton", sans-serif;
+        font-size: 34px;
+        color: var(--amber);
+        line-height: 1;
+      }
+      #speedo .unit {
+        font-size: 11px;
+        color: #c8b98d;
+        margin-top: 2px;
+        letter-spacing: 0.5px;
+      }
 
-  #compass{
-    position:fixed;top:16px;right:16px;z-index:20;
-    width:84px;height:84px;border-radius:50%;
-    background:rgba(36,26,18,.55);border:1px solid rgba(242,200,121,.25);
-    display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px);
-  }
-  #compass .needle{
-    width:0;height:0;
-    border-left:9px solid transparent;border-right:9px solid transparent;
-    border-bottom:30px solid var(--ember);
-    transform-origin:50% 70%;
-    filter:drop-shadow(0 0 3px rgba(217,83,30,.7));
-    transition:transform .15s linear;
-  }
-  #compass .label{position:absolute;bottom:6px;font-size:10px;color:#d8caa8;font-family:'Anton',sans-serif;letter-spacing:1px;}
+      #compass {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 20;
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
+        background: rgba(36, 26, 18, 0.55);
+        border: 1px solid rgba(242, 200, 121, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(3px);
+      }
+      #compass .needle {
+        width: 0;
+        height: 0;
+        border-left: 9px solid transparent;
+        border-right: 9px solid transparent;
+        border-bottom: 30px solid var(--ember);
+        transform-origin: 50% 70%;
+        filter: drop-shadow(0 0 3px rgba(217, 83, 30, 0.7));
+        transition: transform 0.15s linear;
+      }
+      #compass .label {
+        position: absolute;
+        bottom: 6px;
+        font-size: 10px;
+        color: #d8caa8;
+        font-family: "Anton", sans-serif;
+        letter-spacing: 1px;
+      }
 
-  #reward-popup{
-    position:fixed;top:40%;left:50%;
-    transform:translate(-50%,-40%) scale(.7);
-    z-index:30;opacity:0;pointer-events:none;
-    background:var(--parchment);
-    border:3px solid var(--moss);
-    border-radius:14px;
-    padding:22px 34px;
-    text-align:center;
-    box-shadow:0 16px 40px rgba(0,0,0,.55);
-    transition:transform .35s cubic-bezier(.34,1.56,.64,1), opacity .35s ease;
-    max-width:280px;
-  }
-  #reward-popup.show{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:none;}
-  #reward-popup .cap{font-family:'Anton',sans-serif;color:var(--moss);font-size:13px;letter-spacing:.5px;margin-bottom:6px;}
-  #reward-popup .prize{font-size:22px;color:#4a3418;font-weight:700;}
-  #reward-popup .sub{font-size:13px;color:#6b5c3f;margin-top:6px;}
+      #reward-popup {
+        position: fixed;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -40%) scale(0.7);
+        z-index: 30;
+        opacity: 0;
+        pointer-events: none;
+        background: var(--parchment);
+        border: 3px solid var(--moss);
+        border-radius: 14px;
+        padding: 22px 34px;
+        text-align: center;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+        transition:
+          transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+          opacity 0.35s ease;
+        max-width: 280px;
+      }
+      #reward-popup.show {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        pointer-events: none;
+      }
+      #reward-popup .cap {
+        font-family: "Anton", sans-serif;
+        color: var(--moss);
+        font-size: 13px;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+      }
+      #reward-popup .prize {
+        font-size: 22px;
+        color: #4a3418;
+        font-weight: 700;
+      }
+      #reward-popup .sub {
+        font-size: 13px;
+        color: #6b5c3f;
+        margin-top: 6px;
+      }
 
-  #touch-controls{
-    position:fixed;bottom:18px;left:18px;z-index:20;
-    display:none;grid-template-columns:64px 64px 64px;grid-template-rows:64px 64px;
-    gap:8px;
-  }
-  #touch-controls.active{display:grid;}
-  #touch-controls button{
-    background:rgba(36,26,18,.6);border:1px solid rgba(242,200,121,.35);
-    color:var(--amber);font-size:22px;border-radius:12px;
-    -webkit-tap-highlight-color:transparent;user-select:none;
-  }
-  #tc-up{grid-column:2;grid-row:1;}
-  #tc-left{grid-column:1;grid-row:2;}
-  #tc-down{grid-column:2;grid-row:2;}
-  #tc-right{grid-column:3;grid-row:2;}
+      #touch-controls {
+        position: fixed;
+        bottom: 18px;
+        left: 18px;
+        z-index: 20;
+        display: none;
+        grid-template-columns: 64px 64px 64px;
+        grid-template-rows: 64px 64px;
+        gap: 8px;
+      }
+      #touch-controls.active {
+        display: grid;
+      }
+      #touch-controls button {
+        background: rgba(36, 26, 18, 0.6);
+        border: 1px solid rgba(242, 200, 121, 0.35);
+        color: var(--amber);
+        font-size: 22px;
+        border-radius: 12px;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+      }
+      #tc-up {
+        grid-column: 2;
+        grid-row: 1;
+      }
+      #tc-left {
+        grid-column: 1;
+        grid-row: 2;
+      }
+      #tc-down {
+        grid-column: 2;
+        grid-row: 2;
+      }
+      #tc-right {
+        grid-column: 3;
+        grid-row: 2;
+      }
 
-  #signal{
-    position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
-    z-index:20;color:#d8caa8;font-size:13px;opacity:0;transition:opacity .5s ease;
-    background:rgba(36,26,18,.5);padding:6px 14px;border-radius:8px;
-  }
-  #signal.show{opacity:1;}
+      #signal {
+        position: fixed;
+        bottom: 22px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 20;
+        color: #d8caa8;
+        font-size: 13px;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        background: rgba(36, 26, 18, 0.5);
+        padding: 6px 14px;
+        border-radius: 8px;
+      }
+      #signal.show {
+        opacity: 1;
+      }
 
-  #resume-guide{
-    position:fixed;top:16px;left:50%;transform:translateX(-50%);
-    z-index:21;display:flex;align-items:center;gap:8px;
-    background:rgba(58,42,20,.68);border:1px solid rgba(242,200,121,.4);
-    border-radius:30px;padding:7px 16px;color:var(--amber);
-    font-family:'Anton',sans-serif;font-size:13px;letter-spacing:.4px;
-    box-shadow:0 6px 18px rgba(0,0,0,.35);
-  }
-  #resume-guide .arrow{display:inline-block;transition:transform .2s linear;font-size:16px;}
-  #resume-guide .dist{color:#d8caa8;font-family:'Kalam',cursive;font-size:12px;}
+      #resume-guide {
+        position: fixed;
+        top: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 21;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(58, 42, 20, 0.68);
+        border: 1px solid rgba(242, 200, 121, 0.4);
+        border-radius: 30px;
+        padding: 7px 16px;
+        color: var(--amber);
+        font-family: "Anton", sans-serif;
+        font-size: 13px;
+        letter-spacing: 0.4px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+      }
+      #resume-guide .arrow {
+        display: inline-block;
+        transition: transform 0.2s linear;
+        font-size: 16px;
+      }
+      #resume-guide .dist {
+        color: #d8caa8;
+        font-family: "Kalam", cursive;
+        font-size: 12px;
+      }
 
-  #resume-overlay{
-    position:fixed;inset:0;z-index:60;
-    background:rgba(10,14,10,.72);
-    display:flex;align-items:center;justify-content:center;
-    opacity:0;pointer-events:none;transition:opacity .35s ease;
-    padding:20px;
-  }
-  #resume-overlay.show{opacity:1;pointer-events:auto;}
-  #resume-doc{
-    background:#ffffff;border-radius:4px;max-width:560px;width:100%;
-    max-height:88vh;overflow-y:auto;padding:34px 36px 30px;
-    box-shadow:0 24px 60px rgba(0,0,0,.55);
-    transform:translateY(24px) scale(.96);transition:transform .4s cubic-bezier(.34,1.56,.64,1);
-    position:relative;
-    font-family:Arial, Helvetica, sans-serif;
-  }
-  #resume-overlay.show #resume-doc{transform:translateY(0) scale(1);}
-  #resume-close{
-    position:absolute;top:10px;right:14px;background:none;border:none;
-    font-size:22px;color:#000;cursor:pointer;line-height:1;
-  }
-  #resume-doc .r-name{font-family:Arial, Helvetica, sans-serif;font-weight:700;font-size:22px;color:#000;margin:0;}
-  #resume-doc .r-title{font-size:13px;color:#000;font-weight:400;margin:2px 0 14px;}
-  #resume-doc .r-section{margin-top:14px;}
-  #resume-doc .r-heading{font-family:Arial, Helvetica, sans-serif;font-weight:700;font-size:14px;letter-spacing:.2px;color:#000;border-bottom:1px solid #000;padding-bottom:3px;margin-bottom:7px;}
-  #resume-doc p, #resume-doc li{color:#000;font-size:13.5px;line-height:1.5;}
-  #resume-doc ul{margin:0;padding-left:18px;}
-  #resume-doc p{margin:0 0 6px;}
-  #resume-doc .r-contact{margin-top:16px;font-size:13px;color:#000;}
+      #resume-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        background: rgba(10, 14, 10, 0.72);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.35s ease;
+        padding: 20px;
+      }
+      #resume-overlay.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      #resume-doc {
+        background: #ffffff;
+        border-radius: 4px;
+        max-width: 560px;
+        width: 100%;
+        max-height: 88vh;
+        overflow-y: auto;
+        padding: 34px 36px 30px;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+        transform: translateY(24px) scale(0.96);
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      #resume-overlay.show #resume-doc {
+        transform: translateY(0) scale(1);
+      }
+      #resume-close {
+        position: absolute;
+        top: 10px;
+        right: 14px;
+        background: none;
+        border: none;
+        font-size: 22px;
+        color: #000;
+        cursor: pointer;
+        line-height: 1;
+      }
+      #resume-doc .r-name {
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 700;
+        font-size: 22px;
+        color: #000;
+        margin: 0;
+      }
+      #resume-doc .r-title {
+        font-size: 13px;
+        color: #000;
+        font-weight: 400;
+        margin: 2px 0 14px;
+      }
+      #resume-doc .r-section {
+        margin-top: 14px;
+      }
+      #resume-doc .r-heading {
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        letter-spacing: 0.2px;
+        color: #000;
+        border-bottom: 1px solid #000;
+        padding-bottom: 3px;
+        margin-bottom: 7px;
+      }
+      #resume-doc p,
+      #resume-doc li {
+        color: #000;
+        font-size: 13.5px;
+        line-height: 1.5;
+      }
+      #resume-doc ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+      #resume-doc p {
+        margin: 0 0 6px;
+      }
+      #resume-doc .r-contact {
+        margin-top: 16px;
+        font-size: 13px;
+        color: #000;
+      }
 
-  @media (max-width:720px){
-    #hud{max-width:180px;font-size:12px;padding:8px 10px;}
-    #hud .hint{font-size:11px;}
-  }
-</style>
-</head>
-<body>
-
-<div id="loading">
-  <h1>TIMBERLINE DROP</h1>
-  <div class="bar"><div></div></div>
-  <p>dropping into the forest…</p>
-</div>
-
-<div id="canvas-wrap"></div>
-
-<div id="hud">
-  <div class="title">🌲 Timberline Drop</div>
-  <div class="hint" id="hud-hint">Falling in… hold on tight.</div>
-</div>
-
-<div id="compass"><div class="needle" id="needle"></div><div class="label">📄</div></div>
-
-<div id="speedo"><div class="num" id="speed-num">0</div><div class="unit">MPH</div></div>
-
-<div id="reward-popup">
-  <div class="cap">✦ CHECKPOINT REACHED ✦</div>
-  <div class="prize" id="prize-text">Nitro Boost!</div>
-  <div class="sub" id="prize-sub">keep exploring the forest</div>
-</div>
-
-<div id="signal"></div>
-
-<div id="resume-guide">
-  <span class="arrow" id="resume-arrow">↑</span>
-  <span>RÉSUMÉ</span>
-  <span class="dist" id="resume-dist"></span>
-</div>
-
-<div id="resume-overlay">
-  <div id="resume-doc">
-    <button id="resume-close" aria-label="Close">×</button>
-    <p class="r-name">Vijay Kumar Domala</p>
-    <p class="r-title">Phone: +91 8309632441 — Email: dvijaykumar112004@gmail.com<br>GitHub: vijay11-bot — LinkedIn: vijay-kumar-134515280</p>
-
-    <div class="r-section">
-      <div class="r-heading">Career Objective</div>
-      <p>Computer Science graduate seeking a Trainee Software Engineer role where I can apply my knowledge of Java, Python, Data Structures, Object-Oriented Programming, and AI/ML concepts. Interested in developing reliable software solutions, solving technical problems, and continuously strengthening my software engineering and machine learning skills.</p>
+      @media (max-width: 720px) {
+        #hud {
+          max-width: 180px;
+          font-size: 12px;
+          padding: 8px 10px;
+        }
+        #hud .hint {
+          font-size: 11px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading">
+      <h1>TIMBERLINE DROP</h1>
+      <div class="bar"><div></div></div>
+      <p>dropping into the forest…</p>
     </div>
 
-    <div class="r-section">
-      <div class="r-heading">Education</div>
-      <p>Rajeev Gandhi Memorial College of Engineering and Technology — Aug 2022 – May 2026<br>
-      B.Tech - Computer Science Engineering &amp; Business Systems — Nandyal, India</p>
-      <p>Narayana Junior College — Apr 2020 – Apr 2022<br>
-      Intermediate Education (Percentage: 87.9%) — Nandyal, India</p>
-      <p>Sri Chaitanya School, Nandyal — Jun 2019 – Apr 2020<br>
-      Secondary School Certificate (SSC) (Marks: 586/600) — Nandyal, India</p>
+    <div id="canvas-wrap"></div>
+
+    <div id="hud">
+      <div class="title">🌲 Timberline Drop</div>
+      <div class="hint" id="hud-hint">Falling in… hold on tight.</div>
     </div>
 
-    <div class="r-section">
-      <div class="r-heading">Experience</div>
-      <p>Tap Academy, Bangalore — Jun 2026 – Present<br>Java Full Stack Intern</p>
-      <ul>
-        <li>Pursuing internship training in Java Full Stack Web Development, gaining practical knowledge in Core Java, OOP concepts, Servlets, JDBC, HTML, CSS, JavaScript, and MySQL.</li>
-        <li>Developed a real-time Fashion Store E-Commerce Web Application with functionalities such as user authentication, shopping cart, product management, and order processing.</li>
-      </ul>
+    <div id="compass">
+      <div class="needle" id="needle"></div>
+      <div class="label">📄</div>
     </div>
 
-    <div class="r-section">
-      <div class="r-heading">Projects</div>
-      <p>Multi-Agent AI Research Assistant<br>Technologies: Python, LLMs, Prompt Engineering, AI Agents</p>
-      <ul>
-        <li>Developed an AI-based multi-agent workflow in which specialized agents perform research, summarization, verification, and response-generation tasks.</li>
-        <li>Designed system prompts and task-specific instructions for individual AI agents to improve consistency and task execution.</li>
-        <li>Implemented an agent workflow for passing relevant information between specialized agents and generating a final structured response.</li>
-      </ul>
-      <p>Fashion Hub - E-Commerce Web Application<br>Tech: HTML, CSS, JavaScript, Java, MySQL, Apache Tomcat Server, VS Code</p>
-      <ul>
-        <li>Developed a fashion store application for exploring fashion trends and style collections through an interactive web platform.</li>
-        <li>Designed responsive frontend interfaces using HTML, CSS, and JavaScript and implemented backend functionalities using Java.</li>
-        <li>Integrated MySQL database for efficient management of user and fashion-related data.</li>
-      </ul>
+    <div id="speedo">
+      <div class="num" id="speed-num">0</div>
+      <div class="unit">MPH</div>
     </div>
 
-    <div class="r-section">
-      <div class="r-heading">Technical Skills</div>
-      <ul>
-        <li>Programming Languages: Python, C, Java</li>
-        <li>Web Technologies: HTML, CSS, JavaScript</li>
-        <li>AI Agents: AI Agents, Multi-Agent Systems, Agent Workflows, Tool Calling</li>
-        <li>Core Concepts: Data Structures, Object-Oriented Programming, SDLC, Waterfall</li>
-        <li>Testing &amp; QA: Manual Testing, Test Case Design, Debugging</li>
-        <li>Tools &amp; Platforms: Git, GitHub</li>
-      </ul>
+    <div id="reward-popup">
+      <div class="cap">✦ CHECKPOINT REACHED ✦</div>
+      <div class="prize" id="prize-text">Nitro Boost!</div>
+      <div class="sub" id="prize-sub">keep exploring the forest</div>
     </div>
 
-    <div class="r-section">
-      <div class="r-heading">Certifications</div>
-      <ul>
-        <li>AWS Certified Cloud Practitioner – Amazon Web Services, Apr 2025</li>
-        <li>Python Programming – Slash Mark</li>
-        <li>Prompt Engineering – IBM</li>
-        <li>Fullstack Web Application Development – Pegorion Software Solutions</li>
-      </ul>
+    <div id="signal"></div>
+
+    <div id="resume-guide">
+      <span class="arrow" id="resume-arrow">↑</span>
+      <span>RÉSUMÉ</span>
+      <span class="dist" id="resume-dist"></span>
     </div>
 
-    <div class="r-section">
-      <div class="r-heading">Soft Skills</div>
-      <p>Problem Solving • Analytical Thinking • Communication • Team Collaboration • Adaptability • Quick Learner • Time Management</p>
+    <div id="resume-overlay">
+      <div id="resume-doc">
+        <button id="resume-close" aria-label="Close">×</button>
+        <p class="r-name">Vijay Kumar Domala</p>
+        <p class="r-title">
+          Phone: +91 8309632441 — Email: dvijaykumar112004@gmail.com<br />GitHub:
+          vijay11-bot — LinkedIn: vijay-kumar-134515280
+        </p>
+
+        <div class="r-section">
+          <div class="r-heading">Education</div>
+          <p>
+            Rajeev Gandhi Memorial College of Engineering and Technology — Aug
+            2022 – May 2026<br />
+            B.Tech - Computer Science Engineering &amp; Business Systems —
+            Nandyal, India
+          </p>
+          <p>
+            Narayana Junior College — Apr 2020 – Apr 2022<br />
+            Intermediate Education (Percentage: 87.9%) — Nandyal, India
+          </p>
+          <p>
+            Sri Chaitanya School, Nandyal — Jun 2019 – Apr 2020<br />
+            Secondary School Certificate (SSC) (Marks: 586/600) — Nandyal, India
+          </p>
+        </div>
+
+        <div class="r-section">
+          <div class="r-heading">Experience</div>
+          <p>
+            Tap Academy, Bangalore — Jun 2026 – Present<br />Java Full Stack
+            Intern
+          </p>
+          <ul>
+            <li>
+              Pursuing internship training in Java Full Stack Web Development,
+              gaining practical knowledge in Core Java, OOP concepts, Servlets,
+              JDBC, HTML, CSS, JavaScript, and MySQL.
+            </li>
+            <li>
+              Developed a real-time Fashion Store E-Commerce Web Application
+              with functionalities such as user authentication, shopping cart,
+              product management, and order processing.
+            </li>
+          </ul>
+        </div>
+
+        <div class="r-section">
+          <div class="r-heading">Projects</div>
+          <p>
+            Fashion Hub - E-Commerce Web Application<br />Tech: HTML, CSS,
+            JavaScript, Java, MySQL, Apache Tomcat Server, VS Code
+          </p>
+          <ul>
+            <li>
+              Developed a fashion store application for exploring fashion trends
+              and style collections through an interactive web platform.
+            </li>
+            <li>
+              Designed responsive frontend interfaces using HTML, CSS, and
+              JavaScript and implemented backend functionalities using Java.
+            </li>
+            <li>
+              Integrated MySQL database for efficient management of user and
+              fashion-related data.
+            </li>
+          </ul>
+          <p>
+            Multi-Agent AI Research Assistant<br />Tech: Python, LLMs, Prompt
+            Engineering, AI Agents
+          </p>
+          <ul>
+            <li>
+              Developed an AI-based multi-agent workflow in which specialized
+              agents perform research, summarization, verification, and
+              response-generation tasks.
+            </li>
+            <li>
+              Designed system prompts and task-specific instructions for
+              individual AI agents to improve consistency and task execution.
+            </li>
+            <li>
+              Implemented an agent workflow for passing relevant information
+              between specialized agents and generating a final structured
+              response.
+            </li>
+          </ul>
+        </div>
+
+        <div class="r-section">
+          <div class="r-heading">Technical Skills</div>
+          <ul>
+            <li>Programming Languages: Java, Python, Spring, Spring Boot</li>
+            <li>Frontend: HTML, CSS, JavaScript, React.js</li>
+            <li>AI Agents: AI Agents, Multi-Agent Systems, Agent Workflows</li>
+            <li>Database: MySQL</li>
+          </ul>
+        </div>
+
+        <div class="r-section">
+          <div class="r-heading">Certifications</div>
+          <ul>
+            <li>
+              AWS Certified Cloud Practitioner – Amazon Web Services, Apr 2025
+            </li>
+            <li>Python Programming – Slash Mark</li>
+            <li>Prompt Engineering – IBM</li>
+            <li>
+              Fullstack Web Application Development – Pegorion Software
+              Solutions
+            </li>
+          </ul>
+        </div>
+
+        <div class="r-section">
+          <div class="r-heading">Soft Skills</div>
+          <p>
+            Problem Solving<br />• Analytical Thinking • Communication • Team
+            Collaboration • Adaptability • Quick Learner • Time Management
+          </p>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-</div>
 
-<div id="touch-controls">
-  <button id="tc-up">▲</button>
-  <button id="tc-left">◀</button>
-  <button id="tc-down">▼</button>
-  <button id="tc-right">▶</button>
-</div>
+    <div id="touch-controls">
+      <button id="tc-up">▲</button>
+      <button id="tc-left">◀</button>
+      <button id="tc-down">▼</button>
+      <button id="tc-right">▶</button>
+    </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
-<script>
-(function(){
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <script>
+      (function () {
+        // ---------- basic setup ----------
+        const isMobile =
+          "ontouchstart" in window ||
+          navigator.maxTouchPoints > 0 ||
+          window.innerWidth < 820;
 
-// ---------- basic setup ----------
-const isMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0 || window.innerWidth < 820;
+        const wrap = document.getElementById("canvas-wrap");
+        const scene = new THREE.Scene();
+        const skyTop = new THREE.Color(0x1c2b22);
+        const skyBottom = new THREE.Color(0xd98a3d);
+        scene.background = skyTop.clone();
+        scene.fog = new THREE.FogExp2(0x2a3a2a, isMobile ? 0.013 : 0.0105);
 
-const wrap = document.getElementById('canvas-wrap');
-const scene = new THREE.Scene();
-const skyTop = new THREE.Color(0x1c2b22);
-const skyBottom = new THREE.Color(0xd98a3d);
-scene.background = skyTop.clone();
-scene.fog = new THREE.FogExp2(0x2a3a2a, isMobile ? 0.013 : 0.0105);
+        const camera = new THREE.PerspectiveCamera(
+          58,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000,
+        );
+        camera.position.set(0, 22, -28);
 
-const camera = new THREE.PerspectiveCamera(58, window.innerWidth/window.innerHeight, 0.1, 1000);
-camera.position.set(0, 22, -28);
+        const renderer = new THREE.WebGLRenderer({
+          antialias: !isMobile,
+          powerPreference: "high-performance",
+        });
+        renderer.setPixelRatio(
+          Math.min(window.devicePixelRatio, isMobile ? 1.6 : 2),
+        );
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = isMobile
+          ? THREE.PCFShadowMap
+          : THREE.PCFSoftShadowMap;
+        wrap.appendChild(renderer.domElement);
+        renderer.domElement.style.touchAction = "none";
+        // prevent the page from scrolling/zooming while dragging on the canvas (mobile)
+        ["touchstart", "touchmove"].forEach((ev) => {
+          document.addEventListener(
+            ev,
+            (e) => {
+              if (e.target === renderer.domElement) e.preventDefault();
+            },
+            { passive: false },
+          );
+        });
 
-const renderer = new THREE.WebGLRenderer({antialias:!isMobile, powerPreference:'high-performance'});
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.6 : 2));
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = isMobile ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
-wrap.appendChild(renderer.domElement);
-renderer.domElement.style.touchAction = 'none';
-// prevent the page from scrolling/zooming while dragging on the canvas (mobile)
-['touchstart','touchmove'].forEach(ev=>{
-  document.addEventListener(ev, (e)=>{ if(e.target === renderer.domElement) e.preventDefault(); }, {passive:false});
-});
+        window.addEventListener("resize", () => {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        });
 
-window.addEventListener('resize', ()=>{
-  camera.aspect = window.innerWidth/window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
-// ---------- sky gradient dome ----------
-(function skyDome(){
-  const geo = new THREE.SphereGeometry(480, 24, 16);
-  const mat = new THREE.ShaderMaterial({
-    side: THREE.BackSide,
-    uniforms:{ top:{value:skyTop}, bottom:{value:skyBottom} },
-    vertexShader:`varying vec3 vPos; void main(){ vPos = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
-    fragmentShader:`
+        // ---------- sky gradient dome ----------
+        (function skyDome() {
+          const geo = new THREE.SphereGeometry(480, 24, 16);
+          const mat = new THREE.ShaderMaterial({
+            side: THREE.BackSide,
+            uniforms: { top: { value: skyTop }, bottom: { value: skyBottom } },
+            vertexShader: `varying vec3 vPos; void main(){ vPos = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+            fragmentShader: `
       varying vec3 vPos; uniform vec3 top; uniform vec3 bottom;
       void main(){
         float h = normalize(vPos).y * 0.5 + 0.5;
         gl_FragColor = vec4(mix(bottom, top, smoothstep(0.15,0.75,h)), 1.0);
-      }`
-  });
-  scene.add(new THREE.Mesh(geo, mat));
-})();
-
-// ---------- lights ----------
-const hemi = new THREE.HemisphereLight(0xcfe0c0, 0x2a2016, 0.75);
-scene.add(hemi);
-const sun = new THREE.DirectionalLight(0xffd9a0, 1.15);
-sun.position.set(-60, 90, -40);
-sun.castShadow = true;
-sun.shadow.mapSize.set(isMobile ? 1024 : 2048, isMobile ? 1024 : 2048);
-sun.shadow.camera.left = -120; sun.shadow.camera.right = 120;
-sun.shadow.camera.top = 120; sun.shadow.camera.bottom = -120;
-sun.shadow.camera.far = 260;
-sun.shadow.bias = -0.0015;
-scene.add(sun);
-scene.add(sun.target);
-
-// ---------- terrain ----------
-function terrainHeight(x, z){
-  return Math.sin(x*0.045)*1.6 + Math.cos(z*0.045)*1.6 +
-         Math.sin((x+z)*0.02)*2.2 + Math.sin(x*0.12 + z*0.09)*0.6;
-}
-
-function grassTexture(){
-  const c = document.createElement('canvas'); c.width = c.height = 256;
-  const ctx = c.getContext('2d');
-  ctx.fillStyle = '#3a5230'; ctx.fillRect(0,0,256,256);
-  for(let i=0;i<2600;i++){
-    const x = Math.random()*256, y = Math.random()*256;
-    const shade = 0.75 + Math.random()*0.5;
-    ctx.fillStyle = `rgba(${40*shade},${75*shade},${32*shade},0.6)`;
-    ctx.fillRect(x,y, 2,2);
-  }
-  const tex = new THREE.CanvasTexture(c);
-  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.repeat.set(40,40);
-  return tex;
-}
-
-const GROUND_SIZE = 420, SEG = 140;
-const groundGeo = new THREE.PlaneGeometry(GROUND_SIZE, GROUND_SIZE, SEG, SEG);
-{
-  const pos = groundGeo.attributes.position;
-  for(let i=0;i<pos.count;i++){
-    const lx = pos.getX(i), ly = pos.getY(i);
-    pos.setZ(i, terrainHeight(lx, -ly));
-  }
-  groundGeo.computeVertexNormals();
-}
-const groundMat = new THREE.MeshStandardMaterial({ map:grassTexture(), roughness:1, metalness:0 });
-const ground = new THREE.Mesh(groundGeo, groundMat);
-ground.rotation.x = -Math.PI/2;
-ground.receiveShadow = true;
-scene.add(ground);
-
-// ---------- forest ----------
-function rand(a,b){ return a + Math.random()*(b-a); }
-
-const trunkGeo = new THREE.CylinderGeometry(0.28, 0.42, 3.2, 6);
-const leafGeoA = new THREE.ConeGeometry(1.7, 3.4, 7);
-const leafGeoB = new THREE.ConeGeometry(1.35, 2.6, 7);
-const trunkMat = new THREE.MeshStandardMaterial({ color:0x4a3420, roughness:1 });
-const leafMatA = new THREE.MeshStandardMaterial({ color:0x2e5330, roughness:0.9 });
-const leafMatB = new THREE.MeshStandardMaterial({ color:0x386b3a, roughness:0.9 });
-
-const TREE_COUNT = isMobile ? 140 : 260;
-const trunkMesh = new THREE.InstancedMesh(trunkGeo, trunkMat, TREE_COUNT);
-const leafMeshA = new THREE.InstancedMesh(leafGeoA, leafMatA, TREE_COUNT);
-const leafMeshB = new THREE.InstancedMesh(leafGeoB, leafMatB, TREE_COUNT);
-trunkMesh.castShadow = leafMeshA.castShadow = leafMeshB.castShadow = true;
-trunkMesh.receiveShadow = leafMeshA.receiveShadow = leafMeshB.receiveShadow = true;
-
-const treeSpots = [];
-const dummy = new THREE.Object3D();
-let placed = 0, tries = 0;
-while(placed < TREE_COUNT && tries < TREE_COUNT*8){
-  tries++;
-  const x = rand(-190,190), z = rand(-190,190);
-  const distToCenter = Math.hypot(x,z);
-  if(distToCenter < 14) continue; // spawn clearing
-  const scale = rand(0.75,1.5);
-  const y = terrainHeight(x,z);
-  dummy.position.set(x, y + 1.6*scale, z);
-  dummy.rotation.y = rand(0, Math.PI*2);
-  dummy.scale.setScalar(scale);
-  dummy.updateMatrix();
-  trunkMesh.setMatrixAt(placed, dummy.matrix);
-
-  dummy.position.set(x, y + 3.4*scale, z);
-  dummy.updateMatrix();
-  leafMeshA.setMatrixAt(placed, dummy.matrix);
-
-  dummy.position.set(x, y + 4.6*scale, z);
-  dummy.updateMatrix();
-  leafMeshB.setMatrixAt(placed, dummy.matrix);
-
-  treeSpots.push([x,z]);
-  placed++;
-}
-scene.add(trunkMesh, leafMeshA, leafMeshB);
-
-// small rocks
-const rockGeo = new THREE.DodecahedronGeometry(0.55, 0);
-const rockMat = new THREE.MeshStandardMaterial({ color:0x6b6459, roughness:1, flatShading:true });
-const ROCK_COUNT = isMobile ? 35 : 70;
-const rockMesh = new THREE.InstancedMesh(rockGeo, rockMat, ROCK_COUNT);
-rockMesh.castShadow = rockMesh.receiveShadow = true;
-for(let i=0;i<ROCK_COUNT;i++){
-  const x = rand(-190,190), z = rand(-190,190);
-  const y = terrainHeight(x,z);
-  dummy.position.set(x, y+0.25, z);
-  dummy.rotation.set(rand(0,6),rand(0,6),rand(0,6));
-  dummy.scale.setScalar(rand(0.6,1.8));
-  dummy.updateMatrix();
-  rockMesh.setMatrixAt(i, dummy.matrix);
-}
-scene.add(rockMesh);
-
-// ---------- sign posts & reward pads (6 directions) ----------
-const DEST_COUNT = 6;
-const destinations = [];
-const destNames = ["Crystal Cave","Old Sawmill","Eagle Ridge","River Bend","Dragon's Den","Sky Tower"];
-const destEmoji = ["💎","🪵","🦅","🌊","🐉","⭐"];
-
-function signTexture(text, emoji, big){
-  const w = big ? 720 : 512, h = big ? 300 : 220;
-  const c = document.createElement('canvas'); c.width = w; c.height = h;
-  const ctx = c.getContext('2d');
-  ctx.fillStyle = big ? '#f2c879' : '#caa06a'; ctx.fillRect(0,0,w,h);
-  ctx.strokeStyle = big ? '#7a3f16' : '#5c3f22'; ctx.lineWidth = big ? 14 : 10;
-  ctx.strokeRect(9,9,w-18,h-18);
-  ctx.fillStyle = '#3a2513';
-  ctx.font = (big ? 88 : 64) + 'px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(emoji, w/2, big ? 130 : 100);
-  ctx.font = `bold ${big ? 62 : 46}px 'Kalam', cursive`;
-  ctx.fillText(text, w/2, big ? 235 : 172);
-  const tex = new THREE.CanvasTexture(c);
-  return tex;
-}
-
-function makeSignpost(x,z, angle, label, emoji, big){
-  const group = new THREE.Group();
-  const scale = big ? 1.7 : 1;
-  const postGeo = new THREE.CylinderGeometry(0.18*scale,0.22*scale,3.4*scale,6);
-  const postMat = new THREE.MeshStandardMaterial({ color:0x4a3420, roughness:1 });
-  const post = new THREE.Mesh(postGeo, postMat);
-  post.position.y = 1.7*scale;
-  post.castShadow = true;
-  group.add(post);
-
-  const plankGeo = new THREE.BoxGeometry(2.4*scale, 1.05*scale, 0.12*scale);
-  const plankMat = new THREE.MeshStandardMaterial({
-    map: signTexture(label, emoji, big), roughness:0.85,
-    emissive: big ? 0x5a3510 : 0x000000, emissiveIntensity: big ? 0.35 : 0
-  });
-  const plank = new THREE.Mesh(plankGeo, plankMat);
-  plank.position.set(0, 2.9*scale, 0);
-  plank.rotation.y = angle;
-  plank.castShadow = true;
-  group.add(plank);
-
-  if(big){
-    const glowLight = new THREE.PointLight(0xffcf8a, 0.9, 16);
-    glowLight.position.set(0, 3, 0);
-    group.add(glowLight);
-  }
-
-  const y = terrainHeight(x,z);
-  group.position.set(x, y, z);
-  group.rotation.y = angle + Math.PI/2;
-  scene.add(group);
-  return group;
-}
-
-function makePad(x,z, color, emissive, radius){
-  const y = terrainHeight(x,z);
-  const ringGeo = new THREE.RingGeometry(radius-0.5, radius, 32);
-  const ringMat = new THREE.MeshStandardMaterial({
-    color, emissive, emissiveIntensity:0.6,
-    side:THREE.DoubleSide, transparent:true, opacity:0.85
-  });
-  const ring = new THREE.Mesh(ringGeo, ringMat);
-  ring.rotation.x = -Math.PI/2;
-  ring.position.set(x, y+0.08, z);
-  scene.add(ring);
-
-  const glowGeo = new THREE.CircleGeometry(radius, 32);
-  const glowMat = new THREE.MeshBasicMaterial({ color, transparent:true, opacity:0.16 });
-  const glow = new THREE.Mesh(glowGeo, glowMat);
-  glow.rotation.x = -Math.PI/2;
-  glow.position.set(x, y+0.05, z);
-  scene.add(glow);
-
-  const light = new THREE.PointLight(color, 1.2, radius*7);
-  light.position.set(x, y+2, z);
-  scene.add(light);
-
-  return { x, z, y, ring, glow, light, cooldown:0, radius: radius+2 };
-}
-function makeRewardPad(x,z){ return makePad(x,z, 0xf2c879, 0xd9531e, 2.1); }
-
-for(let i=0;i<DEST_COUNT;i++){
-  const angle = (i/DEST_COUNT)*Math.PI*2;
-  const signX = Math.sin(angle)*34, signZ = Math.cos(angle)*34;
-  const padX = Math.sin(angle)*(120+rand(-10,10)), padZ = Math.cos(angle)*(120+rand(-10,10));
-  makeSignpost(signX, signZ, angle, destNames[i], destEmoji[i], false);
-  const pad = makeRewardPad(padX, padZ);
-  destinations.push(pad);
-}
-
-// ---------- résumé path: bigger, glowing signs that all point the same way ----------
-const RESUME_ANGLE = Math.PI * 0.35; // fixed direction, distinct from the flavor destinations
-const RESUME_DIST = 150;
-const resumeSignSteps = [
-  { r: 26,  label: 'Résumé this way' },
-  { r: 70,  label: 'Keep going!' },
-  { r: 118, label: 'Almost there!' }
-];
-resumeSignSteps.forEach(step=>{
-  const sx = Math.sin(RESUME_ANGLE)*step.r, sz = Math.cos(RESUME_ANGLE)*step.r;
-  makeSignpost(sx, sz, RESUME_ANGLE, step.label, '📄', true);
-});
-const resumeX = Math.sin(RESUME_ANGLE)*RESUME_DIST, resumeZ = Math.cos(RESUME_ANGLE)*RESUME_DIST;
-const resumePad = makePad(resumeX, resumeZ, 0xffe9b0, 0x3d8ab5, 3.4);
-resumePad.triggered = false;
-
-// tall glowing beacon so the résumé pad is visible from across the whole forest, above the tree line
-{
-  const beamGeo = new THREE.CylinderGeometry(0.4, 1.6, 70, 10, 1, true);
-  const beamMat = new THREE.MeshBasicMaterial({
-    color:0xffe9b0, transparent:true, opacity:0.22, side:THREE.DoubleSide, depthWrite:false
-  });
-  const beam = new THREE.Mesh(beamGeo, beamMat);
-  beam.position.set(resumeX, resumePad.y + 35, resumeZ);
-  scene.add(beam);
-  const beacon = new THREE.PointLight(0xffe9b0, 1.6, 60);
-  beacon.position.set(resumeX, resumePad.y + 12, resumeZ);
-  scene.add(beacon);
-}
-
-// glowing breadcrumb trail: small lit arrows on the ground tracing the exact path to the résumé
-{
-  const chevronGeo = new THREE.ConeGeometry(0.55, 1.3, 4);
-  const chevronMat = new THREE.MeshStandardMaterial({
-    color:0xffe9b0, emissive:0xd9a13a, emissiveIntensity:0.9, roughness:0.5
-  });
-  for(let r=10; r<RESUME_DIST-6; r+=9){
-    const bx = Math.sin(RESUME_ANGLE)*r, bz = Math.cos(RESUME_ANGLE)*r;
-    const by = terrainHeight(bx,bz);
-    const chevron = new THREE.Mesh(chevronGeo, chevronMat);
-    chevron.rotation.x = Math.PI/2; // lay flat, apex now points along local +Z
-    chevron.rotation.y = RESUME_ANGLE; // yaw that local +Z to point along the résumé path
-    chevron.position.set(bx, by + 0.5, bz);
-    chevron.castShadow = true;
-    scene.add(chevron);
-  }
-}
-
-// ---------- monster truck ----------
-const WHEEL_RADIUS = 1.05;
-function createTruck(){
-  const truck = new THREE.Group();
-
-  const bodyMat = new THREE.MeshStandardMaterial({ color:0xd9531e, roughness:0.45, metalness:0.35 });
-  const cabinMat = new THREE.MeshStandardMaterial({ color:0x2a2a2a, roughness:0.4, metalness:0.2, transparent:true, opacity:0.85 });
-  const cageMat = new THREE.MeshStandardMaterial({ color:0x1d1d1d, roughness:0.5, metalness:0.6 });
-  const tireMat = new THREE.MeshStandardMaterial({ color:0x141414, roughness:0.95 });
-  const rimMat = new THREE.MeshStandardMaterial({ color:0xdedede, roughness:0.35, metalness:0.7 });
-
-  const chassis = new THREE.Group();
-  chassis.position.y = WHEEL_RADIUS + 0.95;
-  truck.add(chassis);
-
-  const body = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.9, 3.8), bodyMat);
-  body.position.y = 0.1;
-  body.castShadow = true;
-  chassis.add(body);
-
-  const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.85, 1.7), cabinMat);
-  cabin.position.set(0, 0.85, 0.35);
-  cabin.castShadow = true;
-  chassis.add(cabin);
-
-  // roll cage (simple arch bars)
-  const barGeo = new THREE.CylinderGeometry(0.07,0.07,1.4,6);
-  [[-0.95,0.35],[0.95,0.35],[-0.95,-1.15],[0.95,-1.15]].forEach(([x,z])=>{
-    const bar = new THREE.Mesh(barGeo, cageMat);
-    bar.position.set(x, 0.9, z);
-    bar.castShadow = true;
-    chassis.add(bar);
-  });
-  const topBarGeo = new THREE.CylinderGeometry(0.07,0.07,1.9,6);
-  [0.35,-1.15].forEach(z=>{
-    const bar = new THREE.Mesh(topBarGeo, cageMat);
-    bar.rotation.z = Math.PI/2;
-    bar.position.set(0, 1.6, z);
-    bar.castShadow = true;
-    chassis.add(bar);
-  });
-  const sideBarGeo = new THREE.CylinderGeometry(0.07,0.07,1.5,6);
-  [-0.95,0.95].forEach(x=>{
-    const bar = new THREE.Mesh(sideBarGeo, cageMat);
-    bar.rotation.x = Math.PI/2;
-    bar.position.set(x, 1.6, -0.4);
-    bar.castShadow = true;
-    chassis.add(bar);
-  });
-
-  // headlights
-  [[-0.9,1.9],[0.9,1.9]].forEach(([x,z])=>{
-    const hl = new THREE.Mesh(new THREE.SphereGeometry(0.13,8,8), new THREE.MeshStandardMaterial({ color:0xfff3c4, emissive:0xfff3c4, emissiveIntensity:1.4 }));
-    hl.position.set(x,0.15,z);
-    chassis.add(hl);
-  });
-
-  // wheels
-  const wheelGeo = new THREE.CylinderGeometry(WHEEL_RADIUS, WHEEL_RADIUS, 0.85, 20);
-  const rimGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.9, 12);
-  const wheelPositions = {
-    fl:[-1.55, 1.55], fr:[1.55, 1.55], rl:[-1.55, -1.55], rr:[1.55,-1.55]
-  };
-  const wheels = {};
-  Object.keys(wheelPositions).forEach(key=>{
-    const [x,z] = wheelPositions[key];
-    const wGroup = new THREE.Group();
-    const tire = new THREE.Mesh(wheelGeo, tireMat);
-    tire.rotation.z = Math.PI/2;
-    tire.castShadow = true;
-    const rim = new THREE.Mesh(rimGeo, rimMat);
-    rim.rotation.z = Math.PI/2;
-    wGroup.add(tire, rim);
-    wGroup.position.set(x, WHEEL_RADIUS, z);
-    truck.add(wGroup);
-    wheels[key] = wGroup;
-  });
-
-  // exhausts
-  const exGeo = new THREE.CylinderGeometry(0.09,0.09,1.0,8);
-  const exMat = new THREE.MeshStandardMaterial({ color:0x888888, metalness:0.8, roughness:0.3 });
-  [[-1.0,-1.7],[ -0.7,-1.7]].forEach(([x,z])=>{
-    const ex = new THREE.Mesh(exGeo, exMat);
-    ex.position.set(x, 1.4, z);
-    chassis.add(ex);
-  });
-
-  return { group: truck, chassis, wheels };
-}
-
-const truckObj = createTruck();
-const truck = truckObj.group;
-scene.add(truck);
-
-sun.target = truck; // keep light targeted roughly at play area (updated below manually too)
-
-// ---------- dust particles ----------
-const DUST_COUNT = 140;
-const dustGeo = new THREE.BufferGeometry();
-const dustPos = new Float32Array(DUST_COUNT*3);
-const dustVel = new Float32Array(DUST_COUNT*3);
-const dustLife = new Float32Array(DUST_COUNT);
-for(let i=0;i<DUST_COUNT;i++){ dustLife[i]=0; }
-dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos,3));
-const dustMat = new THREE.PointsMaterial({ color:0xcbb98a, size:0.5, transparent:true, opacity:0.55, depthWrite:false });
-const dustPoints = new THREE.Points(dustGeo, dustMat);
-scene.add(dustPoints);
-let dustCursor = 0;
-function emitDust(x,y,z, backX, backZ){
-  for(let n=0;n<2;n++){
-    const i = dustCursor % DUST_COUNT; dustCursor++;
-    dustPos[i*3] = x + rand(-0.3,0.3);
-    dustPos[i*3+1] = y;
-    dustPos[i*3+2] = z + rand(-0.3,0.3);
-    dustVel[i*3] = backX*rand(0.5,1.2) + rand(-0.4,0.4);
-    dustVel[i*3+1] = rand(0.6,1.6);
-    dustVel[i*3+2] = backZ*rand(0.5,1.2) + rand(-0.4,0.4);
-    dustLife[i] = 1.0;
-  }
-}
-
-// ---------- state ----------
-let mode = 'falling'; // falling -> driving
-let velocityY = 0;
-let fallTime = 0;
-truck.position.set(rand(-3,3), 30, rand(-3,3));
-let bounceCount = 0;
-
-let heading = rand(0, Math.PI*2);
-let speed = 0;
-const MAX_SPEED = 26;      // world units/sec
-const MAX_REV = -12;
-const ACCEL = 22;
-const BRAKE_DECEL = 34;
-const FRICTION = 10;
-const TURN_RATE = 1.9;     // rad/sec at full speed
-let wheelSpin = 0;
-let suspY = 0;
-let camShake = 0;
-
-const keys = { fwd:false, back:false, left:false, right:false };
-
-window.addEventListener('keydown', (e)=>{
-  if(['ArrowUp','KeyW'].includes(e.code)) keys.fwd = true;
-  if(['ArrowDown','KeyS'].includes(e.code)) keys.back = true;
-  if(['ArrowLeft','KeyA'].includes(e.code)) keys.left = true;
-  if(['ArrowRight','KeyD'].includes(e.code)) keys.right = true;
-});
-window.addEventListener('keyup', (e)=>{
-  if(['ArrowUp','KeyW'].includes(e.code)) keys.fwd = false;
-  if(['ArrowDown','KeyS'].includes(e.code)) keys.back = false;
-  if(['ArrowLeft','KeyA'].includes(e.code)) keys.left = false;
-  if(['ArrowRight','KeyD'].includes(e.code)) keys.right = false;
-});
-
-// touch controls
-if(isMobile){ document.getElementById('touch-controls').classList.add('active'); }
-function bindTouch(id, key){
-  const el = document.getElementById(id);
-  const on = (e)=>{ e.preventDefault(); keys[key]=true; };
-  const off = (e)=>{ e.preventDefault(); keys[key]=false; };
-  el.addEventListener('touchstart', on, {passive:false});
-  el.addEventListener('touchend', off, {passive:false});
-  el.addEventListener('touchcancel', off, {passive:false});
-  el.addEventListener('mousedown', on);
-  el.addEventListener('mouseup', off);
-  el.addEventListener('mouseleave', off);
-}
-bindTouch('tc-up','fwd'); bindTouch('tc-down','back');
-bindTouch('tc-left','left'); bindTouch('tc-right','right');
-
-// ---------- reward popup ----------
-const REWARDS = [
-  ["🏆 Nitro Boost +20%", "engine roars louder now"],
-  ["💰 Gold Stash Found", "200 coins added"],
-  ["🔥 Turbo Flames Unlocked", "exhaust glows red hot"],
-  ["🛠 Suspension Upgrade", "smoother over bumps"],
-  ["🎯 Badge: Trailblazer", "new title earned"],
-  ["💎 Rare Gem Found", "a shard of the forest"],
-  ["🚀 Rocket Fuel Refill", "full tank, full send"],
-  ["⭐ Bonus Style Points", "that landing looked great"]
-];
-const popup = document.getElementById('reward-popup');
-const prizeText = document.getElementById('prize-text');
-const prizeSub = document.getElementById('prize-sub');
-let popupTimer = null;
-function showReward(){
-  const pick = REWARDS[Math.floor(Math.random()*REWARDS.length)];
-  prizeText.textContent = pick[0];
-  prizeSub.textContent = pick[1];
-  popup.classList.add('show');
-  clearTimeout(popupTimer);
-  popupTimer = setTimeout(()=> popup.classList.remove('show'), 2600);
-}
-
-const signal = document.getElementById('signal');
-let signalTimer = null;
-function showSignal(msg){
-  signal.textContent = msg;
-  signal.classList.add('show');
-  clearTimeout(signalTimer);
-  signalTimer = setTimeout(()=> signal.classList.remove('show'), 1800);
-}
-
-// ---------- résumé overlay ----------
-const resumeOverlay = document.getElementById('resume-overlay');
-document.getElementById('resume-close').addEventListener('click', ()=> resumeOverlay.classList.remove('show'));
-resumeOverlay.addEventListener('click', (e)=>{ if(e.target === resumeOverlay) resumeOverlay.classList.remove('show'); });
-function showResumeDoc(){
-  resumeOverlay.classList.add('show');
-}
-
-// ---------- HUD refs ----------
-const hint = document.getElementById('hud-hint');
-const needle = document.getElementById('needle');
-const speedNum = document.getElementById('speed-num');
-const resumeArrow = document.getElementById('resume-arrow');
-const resumeDist = document.getElementById('resume-dist');
-
-// ---------- camera rig ----------
-const camPos = new THREE.Vector3(truck.position.x, truck.position.y+22, truck.position.z-28);
-const camLook = new THREE.Vector3();
-
-// ---------- main loop ----------
-const clock = new THREE.Clock();
-let landed = false;
-
-function resumeBearingAndDist(){
-  const dx = resumePad.x - truck.position.x, dz = resumePad.z - truck.position.z;
-  return { bearing: Math.atan2(dx,dz), dist: Math.hypot(dx,dz) };
-}
-
-function animate(){
-  requestAnimationFrame(animate);
-  const dt = Math.min(clock.getDelta(), 0.05);
-
-  if(mode === 'falling'){
-    fallTime += dt;
-    velocityY -= 38 * dt;
-    truck.position.y += velocityY * dt;
-    // truck stays put horizontally — only the tumble animation rotates it, it never drifts sideways
-    const shake = Math.max(0, 1 - fallTime/1.1);
-    truck.rotation.x = Math.sin(fallTime*5.2)*0.3*shake;
-    truck.rotation.z = Math.cos(fallTime*4.1)*0.3*shake;
-
-    const groundY = terrainHeight(truck.position.x, truck.position.z) + WHEEL_RADIUS;
-    if(truck.position.y <= groundY){
-      truck.position.y = groundY;
-      if(Math.abs(velocityY) > 3 && bounceCount < 2){
-        velocityY = -velocityY * 0.32;
-        bounceCount++;
-        camShake = 0.55;
-        emitDust(truck.position.x, groundY, truck.position.z, 0, 0);
-      } else {
-        velocityY = 0;
-        mode = 'driving';
-        truck.rotation.x = 0; truck.rotation.z = 0; truck.rotation.y = heading;
-        hint.textContent = 'Drive so the 📄 arrow (top center) points straight up — that\'s the résumé.';
-        camShake = 0.4;
-        emitDust(truck.position.x, groundY, truck.position.z, 0, 0);
-      }
-    }
-    // camera holds steady behind/above the drop point — no side-to-side drift
-    const desiredFallCam = new THREE.Vector3(truck.position.x, truck.position.y + 13, truck.position.z - 17);
-    camPos.lerp(desiredFallCam, Math.min(1, dt*4));
-  } else {
-    // ---- driving physics ----
-    let accel = 0;
-    if(keys.fwd) accel = ACCEL;
-    else if(keys.back) accel = -BRAKE_DECEL*0.6;
-
-    speed += accel*dt;
-    if(!keys.fwd && !keys.back){
-      speed -= Math.sign(speed) * FRICTION * dt;
-      if(Math.abs(speed) < 0.05) speed = 0;
-    }
-    speed = Math.max(MAX_REV, Math.min(MAX_SPEED, speed));
-
-    const speedFrac = speed / MAX_SPEED;
-    const turnFactor = 0.35 + 0.65*Math.min(1, Math.abs(speed)/6);
-    if(keys.left) heading += TURN_RATE*dt*turnFactor*(speed>=0?1:-1);
-    if(keys.right) heading -= TURN_RATE*dt*turnFactor*(speed>=0?1:-1);
-
-    let nx = truck.position.x + Math.sin(heading)*speed*dt;
-    let nz = truck.position.z + Math.cos(heading)*speed*dt;
-    const bound = GROUND_SIZE/2 - 6;
-    nx = Math.max(-bound, Math.min(bound, nx));
-    nz = Math.max(-bound, Math.min(bound, nz));
-    truck.position.x = nx;
-    truck.position.z = nz;
-
-    // suspension: sample 4 wheel corners
-    const hw = 1.55, hl = 1.7;
-    const s = Math.sin(heading), c = Math.cos(heading);
-    const corners = [
-      [-hw, hl], [hw, hl], [-hw,-hl], [hw,-hl]
-    ].map(([lx,lz])=>{
-      const wx = truck.position.x + lx*c + lz*s;
-      const wz = truck.position.z - lx*s + lz*c;
-      return terrainHeight(wx, wz);
-    });
-    const avgH = (corners[0]+corners[1]+corners[2]+corners[3])/4;
-    const frontH = (corners[0]+corners[1])/2, rearH = (corners[2]+corners[3])/2;
-    const leftH = (corners[0]+corners[2])/2, rightH = (corners[1]+corners[3])/2;
-
-    const targetY = avgH + WHEEL_RADIUS + 0.95;
-    suspY += (targetY - (truck.position.y)) * Math.min(1, dt*8);
-    truck.position.y += ( (targetY) - truck.position.y ) * Math.min(1, dt*9);
-
-    const pitch = Math.atan2(rearH - frontH, hl*2);
-    const roll = Math.atan2(rightH - leftH, hw*2);
-    truck.rotation.x += (pitch - truck.rotation.x) * Math.min(1, dt*8);
-    truck.rotation.z += (roll - truck.rotation.z) * Math.min(1, dt*8);
-    truck.rotation.y = heading;
-
-    wheelSpin += (speed*dt)/WHEEL_RADIUS;
-    Object.values(truckObj.wheels).forEach(w=>{ w.rotation.x = wheelSpin; });
-
-    if(Math.abs(speed) > 3){
-      const backX = -Math.sin(heading), backZ = -Math.cos(heading);
-      emitDust(truck.position.x - Math.sin(heading)*1.9, truck.position.y-0.9, truck.position.z - Math.cos(heading)*1.9, backX, backZ);
-    }
-
-    speedNum.textContent = Math.round(Math.abs(speed)*3.4);
-
-    // compass + résumé guide banner — both point at the same target, the résumé pad
-    {
-      const { bearing, dist } = resumeBearingAndDist();
-      const rel = bearing - heading;
-      needle.style.transform = `rotate(${rel}rad)`;
-      resumeArrow.style.transform = `rotate(${rel}rad)`;
-      resumeDist.textContent = Math.round(dist) + 'm';
-    }
-
-    // checkpoint detection — flavor pads
-    destinations.forEach(d=>{
-      d.ring.rotation.z += dt*0.4;
-      if(d.cooldown > 0){ d.cooldown -= dt; }
-      const dist = Math.hypot(truck.position.x-d.x, truck.position.z-d.z);
-      const pulse = 1 + Math.sin(performance.now()*0.004)*0.08;
-      d.ring.scale.setScalar(pulse);
-      if(dist < d.radius && d.cooldown <= 0){
-        d.cooldown = 6;
-        showReward();
-      }
-    });
-
-    // résumé pad
-    {
-      resumePad.ring.rotation.z += dt*0.25;
-      if(resumePad.cooldown > 0){ resumePad.cooldown -= dt; }
-      const pulse = 1 + Math.sin(performance.now()*0.003)*0.1;
-      resumePad.ring.scale.setScalar(pulse);
-      const dist = Math.hypot(truck.position.x-resumePad.x, truck.position.z-resumePad.z);
-      if(dist < resumePad.radius && resumePad.cooldown <= 0){
-        resumePad.cooldown = 8;
-        showResumeDoc();
-      }
-    }
-  }
-
-  // camera follow
-  if(mode === 'driving'){
-    const dist = 11, height = 5.2;
-    const desired = new THREE.Vector3(
-      truck.position.x - Math.sin(heading)*dist,
-      truck.position.y + height,
-      truck.position.z - Math.cos(heading)*dist
-    );
-    camPos.lerp(desired, Math.min(1, dt*3.2));
-  }
-  camShake *= 0.9;
-  camera.position.copy(camPos);
-  camera.position.y += (Math.random()-0.5)*camShake*0.4;
-  camLook.set(truck.position.x, truck.position.y + 1.6, truck.position.z);
-  camera.lookAt(camLook);
-
-  // dust update
-  for(let i=0;i<DUST_COUNT;i++){
-    if(dustLife[i] > 0){
-      dustLife[i] -= dt*0.9;
-      dustPos[i*3] += dustVel[i*3]*dt;
-      dustPos[i*3+1] += dustVel[i*3+1]*dt*0.5;
-      dustPos[i*3+2] += dustVel[i*3+2]*dt;
-      dustVel[i*3+1] -= dt*1.5;
-      if(dustLife[i] < 0) { dustPos[i*3+1] -= 50; }
-    }
-  }
-  dustGeo.attributes.position.needsUpdate = true;
-  dustMat.opacity = 0.5;
-
-  sun.target.position.copy(truck.position);
-
-  renderer.render(scene, camera);
-}
-
-// ---------- boot ----------
-setTimeout(()=>{
-  document.getElementById('loading').classList.add('hide');
-  setTimeout(()=> document.getElementById('loading').style.display='none', 850);
-  showSignal('Watch the glowing beacon in the sky and the golden arrows on the ground');
-}, 1200);
-
-animate();
-
-})();
-</script>
-</body>
+      }`,
+          });
+          scene.add(new THREE.Mesh(geo, mat));
+        })();
+
+        // ---------- lights ----------
+        const hemi = new THREE.HemisphereLight(0xcfe0c0, 0x2a2016, 0.75);
+        scene.add(hemi);
+        const sun = new THREE.DirectionalLight(0xffd9a0, 1.15);
+        sun.position.set(-60, 90, -40);
+        sun.castShadow = true;
+        sun.shadow.mapSize.set(isMobile ? 1024 : 2048, isMobile ? 1024 : 2048);
+        sun.shadow.camera.left = -120;
+        sun.shadow.camera.right = 120;
+        sun.shadow.camera.top = 120;
+        sun.shadow.camera.bottom = -120;
+        sun.shadow.camera.far = 260;
+        sun.shadow.bias = -0.0015;
+        scene.add(sun);
+        scene.add(sun.target);
+
+        // ---------- terrain ----------
+        function terrainHeight(x, z) {
+          return (
+            Math.sin(x * 0.045) * 1.6 +
+            Math.cos(z * 0.045) * 1.6 +
+            Math.sin((x + z) * 0.02) * 2.2 +
+            Math.sin(x * 0.12 + z * 0.09) * 0.6
+          );
+        }
+
+        function grassTexture() {
+          const c = document.createElement("canvas");
+          c.width = c.height = 256;
+          const ctx = c.getContext("2d");
+          ctx.fillStyle = "#3a5230";
+          ctx.fillRect(0, 0, 256, 256);
+          for (let i = 0; i < 2600; i++) {
+            const x = Math.random() * 256,
+              y = Math.random() * 256;
+            const shade = 0.75 + Math.random() * 0.5;
+            ctx.fillStyle = `rgba(${40 * shade},${75 * shade},${32 * shade},0.6)`;
+            ctx.fillRect(x, y, 2, 2);
+          }
+          const tex = new THREE.CanvasTexture(c);
+          tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+          tex.repeat.set(40, 40);
+          return tex;
+        }
+
+        const GROUND_SIZE = 420,
+          SEG = 140;
+        const groundGeo = new THREE.PlaneGeometry(
+          GROUND_SIZE,
+          GROUND_SIZE,
+          SEG,
+          SEG,
+        );
+        {
+          const pos = groundGeo.attributes.position;
+          for (let i = 0; i < pos.count; i++) {
+            const lx = pos.getX(i),
+              ly = pos.getY(i);
+            pos.setZ(i, terrainHeight(lx, -ly));
+          }
+          groundGeo.computeVertexNormals();
+        }
+        const groundMat = new THREE.MeshStandardMaterial({
+          map: grassTexture(),
+          roughness: 1,
+          metalness: 0,
+        });
+        const ground = new THREE.Mesh(groundGeo, groundMat);
+        ground.rotation.x = -Math.PI / 2;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        // ---------- forest ----------
+        function rand(a, b) {
+          return a + Math.random() * (b - a);
+        }
+
+        const trunkGeo = new THREE.CylinderGeometry(0.28, 0.42, 3.2, 6);
+        const leafGeoA = new THREE.ConeGeometry(1.7, 3.4, 7);
+        const leafGeoB = new THREE.ConeGeometry(1.35, 2.6, 7);
+        const trunkMat = new THREE.MeshStandardMaterial({
+          color: 0x4a3420,
+          roughness: 1,
+        });
+        const leafMatA = new THREE.MeshStandardMaterial({
+          color: 0x2e5330,
+          roughness: 0.9,
+        });
+        const leafMatB = new THREE.MeshStandardMaterial({
+          color: 0x386b3a,
+          roughness: 0.9,
+        });
+
+        const TREE_COUNT = isMobile ? 140 : 260;
+        const trunkMesh = new THREE.InstancedMesh(
+          trunkGeo,
+          trunkMat,
+          TREE_COUNT,
+        );
+        const leafMeshA = new THREE.InstancedMesh(
+          leafGeoA,
+          leafMatA,
+          TREE_COUNT,
+        );
+        const leafMeshB = new THREE.InstancedMesh(
+          leafGeoB,
+          leafMatB,
+          TREE_COUNT,
+        );
+        trunkMesh.castShadow =
+          leafMeshA.castShadow =
+          leafMeshB.castShadow =
+            true;
+        trunkMesh.receiveShadow =
+          leafMeshA.receiveShadow =
+          leafMeshB.receiveShadow =
+            true;
+
+        const treeSpots = [];
+        const dummy = new THREE.Object3D();
+        let placed = 0,
+          tries = 0;
+        while (placed < TREE_COUNT && tries < TREE_COUNT * 8) {
+          tries++;
+          const x = rand(-190, 190),
+            z = rand(-190, 190);
+          const distToCenter = Math.hypot(x, z);
+          if (distToCenter < 14) continue; // spawn clearing
+          const scale = rand(0.75, 1.5);
+          const y = terrainHeight(x, z);
+          dummy.position.set(x, y + 1.6 * scale, z);
+          dummy.rotation.y = rand(0, Math.PI * 2);
+          dummy.scale.setScalar(scale);
+          dummy.updateMatrix();
+          trunkMesh.setMatrixAt(placed, dummy.matrix);
+
+          dummy.position.set(x, y + 3.4 * scale, z);
+          dummy.updateMatrix();
+          leafMeshA.setMatrixAt(placed, dummy.matrix);
+
+          dummy.position.set(x, y + 4.6 * scale, z);
+          dummy.updateMatrix();
+          leafMeshB.setMatrixAt(placed, dummy.matrix);
+
+          treeSpots.push([x, z]);
+          placed++;
+        }
+        scene.add(trunkMesh, leafMeshA, leafMeshB);
+
+        // small rocks
+        const rockGeo = new THREE.DodecahedronGeometry(0.55, 0);
+        const rockMat = new THREE.MeshStandardMaterial({
+          color: 0x6b6459,
+          roughness: 1,
+          flatShading: true,
+        });
+        const ROCK_COUNT = isMobile ? 35 : 70;
+        const rockMesh = new THREE.InstancedMesh(rockGeo, rockMat, ROCK_COUNT);
+        rockMesh.castShadow = rockMesh.receiveShadow = true;
+        for (let i = 0; i < ROCK_COUNT; i++) {
+          const x = rand(-190, 190),
+            z = rand(-190, 190);
+          const y = terrainHeight(x, z);
+          dummy.position.set(x, y + 0.25, z);
+          dummy.rotation.set(rand(0, 6), rand(0, 6), rand(0, 6));
+          dummy.scale.setScalar(rand(0.6, 1.8));
+          dummy.updateMatrix();
+          rockMesh.setMatrixAt(i, dummy.matrix);
+        }
+        scene.add(rockMesh);
+
+        // ---------- sign posts & reward pads (6 directions) ----------
+        const DEST_COUNT = 6;
+        const destinations = [];
+        const destNames = [
+          "Crystal Cave",
+          "Old Sawmill",
+          "Eagle Ridge",
+          "River Bend",
+          "Dragon's Den",
+          "Sky Tower",
+        ];
+        const destEmoji = ["💎", "🪵", "🦅", "🌊", "🐉", "⭐"];
+
+        function signTexture(text, emoji, big) {
+          const w = big ? 720 : 512,
+            h = big ? 300 : 220;
+          const c = document.createElement("canvas");
+          c.width = w;
+          c.height = h;
+          const ctx = c.getContext("2d");
+          ctx.fillStyle = big ? "#f2c879" : "#caa06a";
+          ctx.fillRect(0, 0, w, h);
+          ctx.strokeStyle = big ? "#7a3f16" : "#5c3f22";
+          ctx.lineWidth = big ? 14 : 10;
+          ctx.strokeRect(9, 9, w - 18, h - 18);
+          ctx.fillStyle = "#3a2513";
+          ctx.font = (big ? 88 : 64) + "px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText(emoji, w / 2, big ? 130 : 100);
+          ctx.font = `bold ${big ? 62 : 46}px 'Kalam', cursive`;
+          ctx.fillText(text, w / 2, big ? 235 : 172);
+          const tex = new THREE.CanvasTexture(c);
+          return tex;
+        }
+
+        function makeSignpost(x, z, angle, label, emoji, big) {
+          const group = new THREE.Group();
+          const scale = big ? 1.7 : 1;
+          const postGeo = new THREE.CylinderGeometry(
+            0.18 * scale,
+            0.22 * scale,
+            3.4 * scale,
+            6,
+          );
+          const postMat = new THREE.MeshStandardMaterial({
+            color: 0x4a3420,
+            roughness: 1,
+          });
+          const post = new THREE.Mesh(postGeo, postMat);
+          post.position.y = 1.7 * scale;
+          post.castShadow = true;
+          group.add(post);
+
+          const plankGeo = new THREE.BoxGeometry(
+            2.4 * scale,
+            1.05 * scale,
+            0.12 * scale,
+          );
+          const plankMat = new THREE.MeshStandardMaterial({
+            map: signTexture(label, emoji, big),
+            roughness: 0.85,
+            emissive: big ? 0x5a3510 : 0x000000,
+            emissiveIntensity: big ? 0.35 : 0,
+          });
+          const plank = new THREE.Mesh(plankGeo, plankMat);
+          plank.position.set(0, 2.9 * scale, 0);
+          plank.rotation.y = angle;
+          plank.castShadow = true;
+          group.add(plank);
+
+          if (big) {
+            const glowLight = new THREE.PointLight(0xffcf8a, 0.9, 16);
+            glowLight.position.set(0, 3, 0);
+            group.add(glowLight);
+          }
+
+          const y = terrainHeight(x, z);
+          group.position.set(x, y, z);
+          group.rotation.y = angle + Math.PI / 2;
+          scene.add(group);
+          return group;
+        }
+
+        function makePad(x, z, color, emissive, radius) {
+          const y = terrainHeight(x, z);
+          const ringGeo = new THREE.RingGeometry(radius - 0.5, radius, 32);
+          const ringMat = new THREE.MeshStandardMaterial({
+            color,
+            emissive,
+            emissiveIntensity: 0.6,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.85,
+          });
+          const ring = new THREE.Mesh(ringGeo, ringMat);
+          ring.rotation.x = -Math.PI / 2;
+          ring.position.set(x, y + 0.08, z);
+          scene.add(ring);
+
+          const glowGeo = new THREE.CircleGeometry(radius, 32);
+          const glowMat = new THREE.MeshBasicMaterial({
+            color,
+            transparent: true,
+            opacity: 0.16,
+          });
+          const glow = new THREE.Mesh(glowGeo, glowMat);
+          glow.rotation.x = -Math.PI / 2;
+          glow.position.set(x, y + 0.05, z);
+          scene.add(glow);
+
+          const light = new THREE.PointLight(color, 1.2, radius * 7);
+          light.position.set(x, y + 2, z);
+          scene.add(light);
+
+          return {
+            x,
+            z,
+            y,
+            ring,
+            glow,
+            light,
+            cooldown: 0,
+            radius: radius + 2,
+          };
+        }
+        function makeRewardPad(x, z) {
+          return makePad(x, z, 0xf2c879, 0xd9531e, 2.1);
+        }
+
+        for (let i = 0; i < DEST_COUNT; i++) {
+          const angle = (i / DEST_COUNT) * Math.PI * 2;
+          const signX = Math.sin(angle) * 34,
+            signZ = Math.cos(angle) * 34;
+          const padX = Math.sin(angle) * (120 + rand(-10, 10)),
+            padZ = Math.cos(angle) * (120 + rand(-10, 10));
+          makeSignpost(signX, signZ, angle, destNames[i], destEmoji[i], false);
+          const pad = makeRewardPad(padX, padZ);
+          destinations.push(pad);
+        }
+
+        // ---------- résumé path: bigger, glowing signs that all point the same way ----------
+        const RESUME_ANGLE = Math.PI * 0.35; // fixed direction, distinct from the flavor destinations
+        const RESUME_DIST = 150;
+        const resumeSignSteps = [
+          { r: 26, label: "Résumé this way" },
+          { r: 70, label: "Keep going!" },
+          { r: 118, label: "Almost there!" },
+        ];
+        resumeSignSteps.forEach((step) => {
+          const sx = Math.sin(RESUME_ANGLE) * step.r,
+            sz = Math.cos(RESUME_ANGLE) * step.r;
+          makeSignpost(sx, sz, RESUME_ANGLE, step.label, "📄", true);
+        });
+        const resumeX = Math.sin(RESUME_ANGLE) * RESUME_DIST,
+          resumeZ = Math.cos(RESUME_ANGLE) * RESUME_DIST;
+        const resumePad = makePad(resumeX, resumeZ, 0xffe9b0, 0x3d8ab5, 3.4);
+        resumePad.triggered = false;
+
+        // tall glowing beacon so the résumé pad is visible from across the whole forest, above the tree line
+        {
+          const beamGeo = new THREE.CylinderGeometry(0.4, 1.6, 70, 10, 1, true);
+          const beamMat = new THREE.MeshBasicMaterial({
+            color: 0xffe9b0,
+            transparent: true,
+            opacity: 0.22,
+            side: THREE.DoubleSide,
+            depthWrite: false,
+          });
+          const beam = new THREE.Mesh(beamGeo, beamMat);
+          beam.position.set(resumeX, resumePad.y + 35, resumeZ);
+          scene.add(beam);
+          const beacon = new THREE.PointLight(0xffe9b0, 1.6, 60);
+          beacon.position.set(resumeX, resumePad.y + 12, resumeZ);
+          scene.add(beacon);
+        }
+
+        // glowing breadcrumb trail: small lit arrows on the ground tracing the exact path to the résumé
+        {
+          const chevronGeo = new THREE.ConeGeometry(0.55, 1.3, 4);
+          const chevronMat = new THREE.MeshStandardMaterial({
+            color: 0xffe9b0,
+            emissive: 0xd9a13a,
+            emissiveIntensity: 0.9,
+            roughness: 0.5,
+          });
+          for (let r = 10; r < RESUME_DIST - 6; r += 9) {
+            const bx = Math.sin(RESUME_ANGLE) * r,
+              bz = Math.cos(RESUME_ANGLE) * r;
+            const by = terrainHeight(bx, bz);
+            const chevron = new THREE.Mesh(chevronGeo, chevronMat);
+            chevron.rotation.x = Math.PI / 2; // lay flat, apex now points along local +Z
+            chevron.rotation.y = RESUME_ANGLE; // yaw that local +Z to point along the résumé path
+            chevron.position.set(bx, by + 0.5, bz);
+            chevron.castShadow = true;
+            scene.add(chevron);
+          }
+        }
+
+        // ---------- monster truck ----------
+        const WHEEL_RADIUS = 1.05;
+        function createTruck() {
+          const truck = new THREE.Group();
+
+          const bodyMat = new THREE.MeshStandardMaterial({
+            color: 0xd9531e,
+            roughness: 0.45,
+            metalness: 0.35,
+          });
+          const cabinMat = new THREE.MeshStandardMaterial({
+            color: 0x2a2a2a,
+            roughness: 0.4,
+            metalness: 0.2,
+            transparent: true,
+            opacity: 0.85,
+          });
+          const cageMat = new THREE.MeshStandardMaterial({
+            color: 0x1d1d1d,
+            roughness: 0.5,
+            metalness: 0.6,
+          });
+          const tireMat = new THREE.MeshStandardMaterial({
+            color: 0x141414,
+            roughness: 0.95,
+          });
+          const rimMat = new THREE.MeshStandardMaterial({
+            color: 0xdedede,
+            roughness: 0.35,
+            metalness: 0.7,
+          });
+
+          const chassis = new THREE.Group();
+          chassis.position.y = WHEEL_RADIUS + 0.95;
+          truck.add(chassis);
+
+          const body = new THREE.Mesh(
+            new THREE.BoxGeometry(2.5, 0.9, 3.8),
+            bodyMat,
+          );
+          body.position.y = 0.1;
+          body.castShadow = true;
+          chassis.add(body);
+
+          const cabin = new THREE.Mesh(
+            new THREE.BoxGeometry(1.9, 0.85, 1.7),
+            cabinMat,
+          );
+          cabin.position.set(0, 0.85, 0.35);
+          cabin.castShadow = true;
+          chassis.add(cabin);
+
+          // roll cage (simple arch bars)
+          const barGeo = new THREE.CylinderGeometry(0.07, 0.07, 1.4, 6);
+          [
+            [-0.95, 0.35],
+            [0.95, 0.35],
+            [-0.95, -1.15],
+            [0.95, -1.15],
+          ].forEach(([x, z]) => {
+            const bar = new THREE.Mesh(barGeo, cageMat);
+            bar.position.set(x, 0.9, z);
+            bar.castShadow = true;
+            chassis.add(bar);
+          });
+          const topBarGeo = new THREE.CylinderGeometry(0.07, 0.07, 1.9, 6);
+          [0.35, -1.15].forEach((z) => {
+            const bar = new THREE.Mesh(topBarGeo, cageMat);
+            bar.rotation.z = Math.PI / 2;
+            bar.position.set(0, 1.6, z);
+            bar.castShadow = true;
+            chassis.add(bar);
+          });
+          const sideBarGeo = new THREE.CylinderGeometry(0.07, 0.07, 1.5, 6);
+          [-0.95, 0.95].forEach((x) => {
+            const bar = new THREE.Mesh(sideBarGeo, cageMat);
+            bar.rotation.x = Math.PI / 2;
+            bar.position.set(x, 1.6, -0.4);
+            bar.castShadow = true;
+            chassis.add(bar);
+          });
+
+          // headlights
+          [
+            [-0.9, 1.9],
+            [0.9, 1.9],
+          ].forEach(([x, z]) => {
+            const hl = new THREE.Mesh(
+              new THREE.SphereGeometry(0.13, 8, 8),
+              new THREE.MeshStandardMaterial({
+                color: 0xfff3c4,
+                emissive: 0xfff3c4,
+                emissiveIntensity: 1.4,
+              }),
+            );
+            hl.position.set(x, 0.15, z);
+            chassis.add(hl);
+          });
+
+          // wheels
+          const wheelGeo = new THREE.CylinderGeometry(
+            WHEEL_RADIUS,
+            WHEEL_RADIUS,
+            0.85,
+            20,
+          );
+          const rimGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.9, 12);
+          const wheelPositions = {
+            fl: [-1.55, 1.55],
+            fr: [1.55, 1.55],
+            rl: [-1.55, -1.55],
+            rr: [1.55, -1.55],
+          };
+          const wheels = {};
+          Object.keys(wheelPositions).forEach((key) => {
+            const [x, z] = wheelPositions[key];
+            const wGroup = new THREE.Group();
+            const tire = new THREE.Mesh(wheelGeo, tireMat);
+            tire.rotation.z = Math.PI / 2;
+            tire.castShadow = true;
+            const rim = new THREE.Mesh(rimGeo, rimMat);
+            rim.rotation.z = Math.PI / 2;
+            wGroup.add(tire, rim);
+            wGroup.position.set(x, WHEEL_RADIUS, z);
+            truck.add(wGroup);
+            wheels[key] = wGroup;
+          });
+
+          // exhausts
+          const exGeo = new THREE.CylinderGeometry(0.09, 0.09, 1.0, 8);
+          const exMat = new THREE.MeshStandardMaterial({
+            color: 0x888888,
+            metalness: 0.8,
+            roughness: 0.3,
+          });
+          [
+            [-1.0, -1.7],
+            [-0.7, -1.7],
+          ].forEach(([x, z]) => {
+            const ex = new THREE.Mesh(exGeo, exMat);
+            ex.position.set(x, 1.4, z);
+            chassis.add(ex);
+          });
+
+          return { group: truck, chassis, wheels };
+        }
+
+        const truckObj = createTruck();
+        const truck = truckObj.group;
+        scene.add(truck);
+
+        sun.target = truck; // keep light targeted roughly at play area (updated below manually too)
+
+        // ---------- dust particles ----------
+        const DUST_COUNT = 140;
+        const dustGeo = new THREE.BufferGeometry();
+        const dustPos = new Float32Array(DUST_COUNT * 3);
+        const dustVel = new Float32Array(DUST_COUNT * 3);
+        const dustLife = new Float32Array(DUST_COUNT);
+        for (let i = 0; i < DUST_COUNT; i++) {
+          dustLife[i] = 0;
+        }
+        dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
+        const dustMat = new THREE.PointsMaterial({
+          color: 0xcbb98a,
+          size: 0.5,
+          transparent: true,
+          opacity: 0.55,
+          depthWrite: false,
+        });
+        const dustPoints = new THREE.Points(dustGeo, dustMat);
+        scene.add(dustPoints);
+        let dustCursor = 0;
+        function emitDust(x, y, z, backX, backZ) {
+          for (let n = 0; n < 2; n++) {
+            const i = dustCursor % DUST_COUNT;
+            dustCursor++;
+            dustPos[i * 3] = x + rand(-0.3, 0.3);
+            dustPos[i * 3 + 1] = y;
+            dustPos[i * 3 + 2] = z + rand(-0.3, 0.3);
+            dustVel[i * 3] = backX * rand(0.5, 1.2) + rand(-0.4, 0.4);
+            dustVel[i * 3 + 1] = rand(0.6, 1.6);
+            dustVel[i * 3 + 2] = backZ * rand(0.5, 1.2) + rand(-0.4, 0.4);
+            dustLife[i] = 1.0;
+          }
+        }
+
+        // ---------- state ----------
+        let mode = "falling"; // falling -> driving
+        let velocityY = 0;
+        let fallTime = 0;
+        truck.position.set(rand(-3, 3), 30, rand(-3, 3));
+        let bounceCount = 0;
+
+        let heading = rand(0, Math.PI * 2);
+        let speed = 0;
+        const MAX_SPEED = 26; // world units/sec
+        const MAX_REV = -12;
+        const ACCEL = 22;
+        const BRAKE_DECEL = 34;
+        const FRICTION = 10;
+        const TURN_RATE = 1.9; // rad/sec at full speed
+        let wheelSpin = 0;
+        let suspY = 0;
+        let camShake = 0;
+
+        const keys = { fwd: false, back: false, left: false, right: false };
+
+        window.addEventListener("keydown", (e) => {
+          if (["ArrowUp", "KeyW"].includes(e.code)) keys.fwd = true;
+          if (["ArrowDown", "KeyS"].includes(e.code)) keys.back = true;
+          if (["ArrowLeft", "KeyA"].includes(e.code)) keys.left = true;
+          if (["ArrowRight", "KeyD"].includes(e.code)) keys.right = true;
+        });
+        window.addEventListener("keyup", (e) => {
+          if (["ArrowUp", "KeyW"].includes(e.code)) keys.fwd = false;
+          if (["ArrowDown", "KeyS"].includes(e.code)) keys.back = false;
+          if (["ArrowLeft", "KeyA"].includes(e.code)) keys.left = false;
+          if (["ArrowRight", "KeyD"].includes(e.code)) keys.right = false;
+        });
+
+        // touch controls
+        if (isMobile) {
+          document.getElementById("touch-controls").classList.add("active");
+        }
+        function bindTouch(id, key) {
+          const el = document.getElementById(id);
+          const on = (e) => {
+            e.preventDefault();
+            keys[key] = true;
+          };
+          const off = (e) => {
+            e.preventDefault();
+            keys[key] = false;
+          };
+          el.addEventListener("touchstart", on, { passive: false });
+          el.addEventListener("touchend", off, { passive: false });
+          el.addEventListener("touchcancel", off, { passive: false });
+          el.addEventListener("mousedown", on);
+          el.addEventListener("mouseup", off);
+          el.addEventListener("mouseleave", off);
+        }
+        bindTouch("tc-up", "fwd");
+        bindTouch("tc-down", "back");
+        bindTouch("tc-left", "left");
+        bindTouch("tc-right", "right");
+
+        // ---------- reward popup ----------
+        const REWARDS = [
+          ["🏆 Nitro Boost +20%", "engine roars louder now"],
+          ["💰 Gold Stash Found", "200 coins added"],
+          ["🔥 Turbo Flames Unlocked", "exhaust glows red hot"],
+          ["🛠 Suspension Upgrade", "smoother over bumps"],
+          ["🎯 Badge: Trailblazer", "new title earned"],
+          ["💎 Rare Gem Found", "a shard of the forest"],
+          ["🚀 Rocket Fuel Refill", "full tank, full send"],
+          ["⭐ Bonus Style Points", "that landing looked great"],
+        ];
+        const popup = document.getElementById("reward-popup");
+        const prizeText = document.getElementById("prize-text");
+        const prizeSub = document.getElementById("prize-sub");
+        let popupTimer = null;
+        function showReward() {
+          const pick = REWARDS[Math.floor(Math.random() * REWARDS.length)];
+          prizeText.textContent = pick[0];
+          prizeSub.textContent = pick[1];
+          popup.classList.add("show");
+          clearTimeout(popupTimer);
+          popupTimer = setTimeout(() => popup.classList.remove("show"), 2600);
+        }
+
+        const signal = document.getElementById("signal");
+        let signalTimer = null;
+        function showSignal(msg) {
+          signal.textContent = msg;
+          signal.classList.add("show");
+          clearTimeout(signalTimer);
+          signalTimer = setTimeout(() => signal.classList.remove("show"), 1800);
+        }
+
+        // ---------- résumé overlay ----------
+        const resumeOverlay = document.getElementById("resume-overlay");
+        document
+          .getElementById("resume-close")
+          .addEventListener("click", () =>
+            resumeOverlay.classList.remove("show"),
+          );
+        resumeOverlay.addEventListener("click", (e) => {
+          if (e.target === resumeOverlay)
+            resumeOverlay.classList.remove("show");
+        });
+        function showResumeDoc() {
+          resumeOverlay.classList.add("show");
+        }
+
+        // ---------- HUD refs ----------
+        const hint = document.getElementById("hud-hint");
+        const needle = document.getElementById("needle");
+        const speedNum = document.getElementById("speed-num");
+        const resumeArrow = document.getElementById("resume-arrow");
+        const resumeDist = document.getElementById("resume-dist");
+
+        // ---------- camera rig ----------
+        const camPos = new THREE.Vector3(
+          truck.position.x,
+          truck.position.y + 22,
+          truck.position.z - 28,
+        );
+        const camLook = new THREE.Vector3();
+
+        // ---------- main loop ----------
+        const clock = new THREE.Clock();
+        let landed = false;
+
+        function resumeBearingAndDist() {
+          const dx = resumePad.x - truck.position.x,
+            dz = resumePad.z - truck.position.z;
+          return { bearing: Math.atan2(dx, dz), dist: Math.hypot(dx, dz) };
+        }
+
+        function animate() {
+          requestAnimationFrame(animate);
+          const dt = Math.min(clock.getDelta(), 0.05);
+
+          if (mode === "falling") {
+            fallTime += dt;
+            velocityY -= 38 * dt;
+            truck.position.y += velocityY * dt;
+            // truck stays put horizontally — only the tumble animation rotates it, it never drifts sideways
+            const shake = Math.max(0, 1 - fallTime / 1.1);
+            truck.rotation.x = Math.sin(fallTime * 5.2) * 0.3 * shake;
+            truck.rotation.z = Math.cos(fallTime * 4.1) * 0.3 * shake;
+
+            const groundY =
+              terrainHeight(truck.position.x, truck.position.z) + WHEEL_RADIUS;
+            if (truck.position.y <= groundY) {
+              truck.position.y = groundY;
+              if (Math.abs(velocityY) > 3 && bounceCount < 2) {
+                velocityY = -velocityY * 0.32;
+                bounceCount++;
+                camShake = 0.55;
+                emitDust(truck.position.x, groundY, truck.position.z, 0, 0);
+              } else {
+                velocityY = 0;
+                mode = "driving";
+                truck.rotation.x = 0;
+                truck.rotation.z = 0;
+                truck.rotation.y = heading;
+                hint.textContent =
+                  "Drive so the 📄 arrow (top center) points straight up — that's the résumé.";
+                camShake = 0.4;
+                emitDust(truck.position.x, groundY, truck.position.z, 0, 0);
+              }
+            }
+            // camera holds steady behind/above the drop point — no side-to-side drift
+            const desiredFallCam = new THREE.Vector3(
+              truck.position.x,
+              truck.position.y + 13,
+              truck.position.z - 17,
+            );
+            camPos.lerp(desiredFallCam, Math.min(1, dt * 4));
+          } else {
+            // ---- driving physics ----
+            let accel = 0;
+            if (keys.fwd) accel = ACCEL;
+            else if (keys.back) accel = -BRAKE_DECEL * 0.6;
+
+            speed += accel * dt;
+            if (!keys.fwd && !keys.back) {
+              speed -= Math.sign(speed) * FRICTION * dt;
+              if (Math.abs(speed) < 0.05) speed = 0;
+            }
+            speed = Math.max(MAX_REV, Math.min(MAX_SPEED, speed));
+
+            const speedFrac = speed / MAX_SPEED;
+            const turnFactor = 0.35 + 0.65 * Math.min(1, Math.abs(speed) / 6);
+            if (keys.left)
+              heading += TURN_RATE * dt * turnFactor * (speed >= 0 ? 1 : -1);
+            if (keys.right)
+              heading -= TURN_RATE * dt * turnFactor * (speed >= 0 ? 1 : -1);
+
+            let nx = truck.position.x + Math.sin(heading) * speed * dt;
+            let nz = truck.position.z + Math.cos(heading) * speed * dt;
+            const bound = GROUND_SIZE / 2 - 6;
+            nx = Math.max(-bound, Math.min(bound, nx));
+            nz = Math.max(-bound, Math.min(bound, nz));
+            truck.position.x = nx;
+            truck.position.z = nz;
+
+            // suspension: sample 4 wheel corners
+            const hw = 1.55,
+              hl = 1.7;
+            const s = Math.sin(heading),
+              c = Math.cos(heading);
+            const corners = [
+              [-hw, hl],
+              [hw, hl],
+              [-hw, -hl],
+              [hw, -hl],
+            ].map(([lx, lz]) => {
+              const wx = truck.position.x + lx * c + lz * s;
+              const wz = truck.position.z - lx * s + lz * c;
+              return terrainHeight(wx, wz);
+            });
+            const avgH =
+              (corners[0] + corners[1] + corners[2] + corners[3]) / 4;
+            const frontH = (corners[0] + corners[1]) / 2,
+              rearH = (corners[2] + corners[3]) / 2;
+            const leftH = (corners[0] + corners[2]) / 2,
+              rightH = (corners[1] + corners[3]) / 2;
+
+            const targetY = avgH + WHEEL_RADIUS + 0.95;
+            suspY += (targetY - truck.position.y) * Math.min(1, dt * 8);
+            truck.position.y +=
+              (targetY - truck.position.y) * Math.min(1, dt * 9);
+
+            const pitch = Math.atan2(rearH - frontH, hl * 2);
+            const roll = Math.atan2(rightH - leftH, hw * 2);
+            truck.rotation.x +=
+              (pitch - truck.rotation.x) * Math.min(1, dt * 8);
+            truck.rotation.z += (roll - truck.rotation.z) * Math.min(1, dt * 8);
+            truck.rotation.y = heading;
+
+            wheelSpin += (speed * dt) / WHEEL_RADIUS;
+            Object.values(truckObj.wheels).forEach((w) => {
+              w.rotation.x = wheelSpin;
+            });
+
+            if (Math.abs(speed) > 3) {
+              const backX = -Math.sin(heading),
+                backZ = -Math.cos(heading);
+              emitDust(
+                truck.position.x - Math.sin(heading) * 1.9,
+                truck.position.y - 0.9,
+                truck.position.z - Math.cos(heading) * 1.9,
+                backX,
+                backZ,
+              );
+            }
+
+            speedNum.textContent = Math.round(Math.abs(speed) * 3.4);
+
+            // compass + résumé guide banner — both point at the same target, the résumé pad
+            {
+              const { bearing, dist } = resumeBearingAndDist();
+              const rel = bearing - heading;
+              needle.style.transform = `rotate(${rel}rad)`;
+              resumeArrow.style.transform = `rotate(${rel}rad)`;
+              resumeDist.textContent = Math.round(dist) + "m";
+            }
+
+            // checkpoint detection — flavor pads
+            destinations.forEach((d) => {
+              d.ring.rotation.z += dt * 0.4;
+              if (d.cooldown > 0) {
+                d.cooldown -= dt;
+              }
+              const dist = Math.hypot(
+                truck.position.x - d.x,
+                truck.position.z - d.z,
+              );
+              const pulse = 1 + Math.sin(performance.now() * 0.004) * 0.08;
+              d.ring.scale.setScalar(pulse);
+              if (dist < d.radius && d.cooldown <= 0) {
+                d.cooldown = 6;
+                showReward();
+              }
+            });
+
+            // résumé pad
+            {
+              resumePad.ring.rotation.z += dt * 0.25;
+              if (resumePad.cooldown > 0) {
+                resumePad.cooldown -= dt;
+              }
+              const pulse = 1 + Math.sin(performance.now() * 0.003) * 0.1;
+              resumePad.ring.scale.setScalar(pulse);
+              const dist = Math.hypot(
+                truck.position.x - resumePad.x,
+                truck.position.z - resumePad.z,
+              );
+              if (dist < resumePad.radius && resumePad.cooldown <= 0) {
+                resumePad.cooldown = 8;
+                showResumeDoc();
+              }
+            }
+          }
+
+          // camera follow
+          if (mode === "driving") {
+            const dist = 11,
+              height = 5.2;
+            const desired = new THREE.Vector3(
+              truck.position.x - Math.sin(heading) * dist,
+              truck.position.y + height,
+              truck.position.z - Math.cos(heading) * dist,
+            );
+            camPos.lerp(desired, Math.min(1, dt * 3.2));
+          }
+          camShake *= 0.9;
+          camera.position.copy(camPos);
+          camera.position.y += (Math.random() - 0.5) * camShake * 0.4;
+          camLook.set(
+            truck.position.x,
+            truck.position.y + 1.6,
+            truck.position.z,
+          );
+          camera.lookAt(camLook);
+
+          // dust update
+          for (let i = 0; i < DUST_COUNT; i++) {
+            if (dustLife[i] > 0) {
+              dustLife[i] -= dt * 0.9;
+              dustPos[i * 3] += dustVel[i * 3] * dt;
+              dustPos[i * 3 + 1] += dustVel[i * 3 + 1] * dt * 0.5;
+              dustPos[i * 3 + 2] += dustVel[i * 3 + 2] * dt;
+              dustVel[i * 3 + 1] -= dt * 1.5;
+              if (dustLife[i] < 0) {
+                dustPos[i * 3 + 1] -= 50;
+              }
+            }
+          }
+          dustGeo.attributes.position.needsUpdate = true;
+          dustMat.opacity = 0.5;
+
+          sun.target.position.copy(truck.position);
+
+          renderer.render(scene, camera);
+        }
+
+        // ---------- boot ----------
+        setTimeout(() => {
+          document.getElementById("loading").classList.add("hide");
+          setTimeout(
+            () => (document.getElementById("loading").style.display = "none"),
+            850,
+          );
+          showSignal(
+            "Watch the glowing beacon in the sky and the golden arrows on the ground",
+          );
+        }, 1200);
+
+        animate();
+      })();
+    </script>
+  </body>
 </html>
