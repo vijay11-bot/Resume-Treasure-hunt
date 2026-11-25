@@ -51,11 +51,7 @@
       #loading {
         position: fixed;
         inset: 0;
-        background: radial-gradient(
-          ellipse at 50% 30%,
-          #2b3a26 0%,
-          #101a12 75%
-        );
+        background: radial-gradient(ellipse at 50% 30%, #2b3a26 0%, #101a12 75%);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -135,11 +131,7 @@
         width: 118px;
         height: 118px;
         border-radius: 50%;
-        background: radial-gradient(
-          circle at 40% 35%,
-          var(--bark-2),
-          var(--bark) 70%
-        );
+        background: radial-gradient(circle at 40% 35%, var(--bark-2), var(--bark) 70%);
         border: 3px solid rgba(242, 200, 121, 0.4);
         display: flex;
         flex-direction: column;
@@ -323,6 +315,7 @@
         font-size: 12px;
       }
 
+      /* ---------- résumé overlay (links to the PDF in the repo) ---------- */
       #resume-overlay {
         position: fixed;
         inset: 0;
@@ -341,76 +334,61 @@
         pointer-events: auto;
       }
       #resume-doc {
-        background: #ffffff;
-        border-radius: 4px;
-        max-width: 560px;
+        background: var(--parchment);
+        border: 3px solid var(--moss);
+        border-radius: 14px;
+        max-width: 360px;
         width: 100%;
-        max-height: 88vh;
-        overflow-y: auto;
-        padding: 34px 36px 30px;
+        padding: 30px 28px 26px;
+        text-align: center;
         box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
         transform: translateY(24px) scale(0.96);
         transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         position: relative;
-        font-family: Arial, Helvetica, sans-serif;
       }
       #resume-overlay.show #resume-doc {
         transform: translateY(0) scale(1);
       }
       #resume-close {
         position: absolute;
-        top: 10px;
+        top: 8px;
         right: 14px;
         background: none;
         border: none;
-        font-size: 22px;
-        color: #000;
+        font-size: 24px;
+        color: #4a3418;
         cursor: pointer;
-        line-height: 1;
+      }
+      #resume-doc .cap {
+        font-family: "Anton", sans-serif;
+        color: var(--moss);
+        font-size: 13px;
+        letter-spacing: 0.5px;
       }
       #resume-doc .r-name {
-        font-family: Arial, Helvetica, sans-serif;
-        font-weight: 700;
-        font-size: 22px;
-        color: #000;
-        margin: 0;
+        font-family: "Anton", sans-serif;
+        font-size: 26px;
+        color: #4a3418;
+        margin: 6px 0 18px;
       }
-      #resume-doc .r-title {
-        font-size: 13px;
-        color: #000;
-        font-weight: 400;
-        margin: 2px 0 14px;
+      #resume-doc .btn {
+        display: block;
+        margin: 8px 0;
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-family: "Anton", sans-serif;
+        letter-spacing: 0.5px;
+        text-decoration: none;
+        font-size: 15px;
       }
-      #resume-doc .r-section {
-        margin-top: 14px;
+      #resume-doc .btn.primary {
+        background: var(--ember);
+        color: #fff;
       }
-      #resume-doc .r-heading {
-        font-family: Arial, Helvetica, sans-serif;
-        font-weight: 700;
-        font-size: 14px;
-        letter-spacing: 0.2px;
-        color: #000;
-        border-bottom: 1px solid #000;
-        padding-bottom: 3px;
-        margin-bottom: 7px;
-      }
-      #resume-doc p,
-      #resume-doc li {
-        color: #000;
-        font-size: 13.5px;
-        line-height: 1.5;
-      }
-      #resume-doc ul {
-        margin: 0;
-        padding-left: 18px;
-      }
-      #resume-doc p {
-        margin: 0 0 6px;
-      }
-      #resume-doc .r-contact {
-        margin-top: 16px;
-        font-size: 13px;
-        color: #000;
+      #resume-doc .btn.secondary {
+        background: transparent;
+        color: #4a3418;
+        border: 2px solid var(--moss);
       }
 
       @media (max-width: 720px) {
@@ -466,124 +444,10 @@
     <div id="resume-overlay">
       <div id="resume-doc">
         <button id="resume-close" aria-label="Close">×</button>
+        <div class="cap">✦ RÉSUMÉ FOUND ✦</div>
         <p class="r-name">Vijay Kumar Domala</p>
-        <p class="r-title">
-          Phone: +91 8309632441 — Email: dvijaykumar112004@gmail.com<br />GitHub:
-          vijay11-bot — LinkedIn: vijay-kumar-134515280
-        </p>
-
-        <div class="r-section">
-          <div class="r-heading">Education</div>
-          <p>
-            Rajeev Gandhi Memorial College of Engineering and Technology — Aug
-            2022 – May 2026<br />
-            B.Tech - Computer Science Engineering &amp; Business Systems —
-            Nandyal, India
-          </p>
-          <p>
-            Narayana Junior College — Apr 2020 – Apr 2022<br />
-            Intermediate Education (Percentage: 87.9%) — Nandyal, India
-          </p>
-          <p>
-            Sri Chaitanya School, Nandyal — Jun 2019 – Apr 2020<br />
-            Secondary School Certificate (SSC) (Marks: 586/600) — Nandyal, India
-          </p>
-        </div>
-
-        <div class="r-section">
-          <div class="r-heading">Experience</div>
-          <p>
-            Tap Academy, Bangalore — Jun 2026 – Present<br />Java Full Stack
-            Intern
-          </p>
-          <ul>
-            <li>
-              Pursuing internship training in Java Full Stack Web Development,
-              gaining practical knowledge in Core Java, OOP concepts, Servlets,
-              JDBC, HTML, CSS, JavaScript, and MySQL.
-            </li>
-            <li>
-              Developed a real-time Fashion Store E-Commerce Web Application
-              with functionalities such as user authentication, shopping cart,
-              product management, and order processing.
-            </li>
-          </ul>
-        </div>
-
-        <div class="r-section">
-          <div class="r-heading">Projects</div>
-          <p>
-            Fashion Hub - E-Commerce Web Application<br />Tech: HTML, CSS,
-            JavaScript, Java, MySQL, Apache Tomcat Server, VS Code
-          </p>
-          <ul>
-            <li>
-              Developed a fashion store application for exploring fashion trends
-              and style collections through an interactive web platform.
-            </li>
-            <li>
-              Designed responsive frontend interfaces using HTML, CSS, and
-              JavaScript and implemented backend functionalities using Java.
-            </li>
-            <li>
-              Integrated MySQL database for efficient management of user and
-              fashion-related data.
-            </li>
-          </ul>
-          <p>
-            Multi-Agent AI Research Assistant<br />Tech: Python, LLMs, Prompt
-            Engineering, AI Agents
-          </p>
-          <ul>
-            <li>
-              Developed an AI-based multi-agent workflow in which specialized
-              agents perform research, summarization, verification, and
-              response-generation tasks.
-            </li>
-            <li>
-              Designed system prompts and task-specific instructions for
-              individual AI agents to improve consistency and task execution.
-            </li>
-            <li>
-              Implemented an agent workflow for passing relevant information
-              between specialized agents and generating a final structured
-              response.
-            </li>
-          </ul>
-        </div>
-
-        <div class="r-section">
-          <div class="r-heading">Technical Skills</div>
-          <ul>
-            <li>Programming Languages: Java, Python, Spring, Spring Boot</li>
-            <li>Frontend: HTML, CSS, JavaScript, React.js</li>
-            <li>AI Agents: AI Agents, Multi-Agent Systems, Agent Workflows</li>
-            <li>Database: MySQL</li>
-          </ul>
-        </div>
-
-        <div class="r-section">
-          <div class="r-heading">Certifications</div>
-          <ul>
-            <li>
-              AWS Certified Cloud Practitioner – Amazon Web Services, Apr 2025
-            </li>
-            <li>Python Programming – Slash Mark</li>
-            <li>Prompt Engineering – IBM</li>
-            <li>
-              Fullstack Web Application Development – Pegorion Software
-              Solutions
-            </li>
-          </ul>
-        </div>
-
-        <div class="r-section">
-          <div class="r-heading">Soft Skills</div>
-          <p>
-            Problem Solving<br />• Analytical Thinking • Communication • Team
-            Collaboration • Adaptability • Quick Learner • Time Management
-          </p>
-        </div>
+        <a id="resume-open" class="btn primary" target="_blank" rel="noopener">📄 Open Résumé</a>
+        <a id="resume-download" class="btn secondary" target="_blank" rel="noopener">⬇ Download</a>
       </div>
     </div>
 
@@ -760,21 +624,9 @@
         });
 
         const TREE_COUNT = isMobile ? 140 : 260;
-        const trunkMesh = new THREE.InstancedMesh(
-          trunkGeo,
-          trunkMat,
-          TREE_COUNT,
-        );
-        const leafMeshA = new THREE.InstancedMesh(
-          leafGeoA,
-          leafMatA,
-          TREE_COUNT,
-        );
-        const leafMeshB = new THREE.InstancedMesh(
-          leafGeoB,
-          leafMatB,
-          TREE_COUNT,
-        );
+        const trunkMesh = new THREE.InstancedMesh(trunkGeo, trunkMat, TREE_COUNT);
+        const leafMeshA = new THREE.InstancedMesh(leafGeoA, leafMatA, TREE_COUNT);
+        const leafMeshB = new THREE.InstancedMesh(leafGeoB, leafMatB, TREE_COUNT);
         trunkMesh.castShadow =
           leafMeshA.castShadow =
           leafMeshB.castShadow =
@@ -1326,6 +1178,17 @@
           if (e.target === resumeOverlay)
             resumeOverlay.classList.remove("show");
         });
+
+        // The PDF sits in the same folder as index.html in the GitHub repo.
+        // Spaces in the file name must be written as %20.
+        const RESUME_URL = "D.vijay%20kumar%20Resume.pdf";
+
+        const openBtn = document.getElementById("resume-open");
+        const downloadBtn = document.getElementById("resume-download");
+        openBtn.href = RESUME_URL;
+        downloadBtn.href = RESUME_URL;
+        downloadBtn.setAttribute("download", "Vijay_Kumar_Domala_Resume.pdf");
+
         function showResumeDoc() {
           resumeOverlay.classList.add("show");
         }
